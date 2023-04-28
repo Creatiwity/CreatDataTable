@@ -64,6 +64,10 @@ const dataTableInfos = {
 </CreatDatable>
 ```
 
+## Keywords
+
+Nuxt3,Typescript,Generic,Datatable
+
 <!-- Badges -->
 
 [npm-version-src]: https://img.shields.io/npm/v/@creatiwity/datatable/latest.svg?style=flat&colorA=18181B&colorB=28CF8D
