@@ -2,6 +2,10 @@
 
 ## v1.0.4
 
+[compare changes](https://github.com/Creatiwity/CreatDataTable/compare/v1.0.3...v1.0.4)
+
+## v1.0.4
+
 README Update
 
 ## v1.0.3
