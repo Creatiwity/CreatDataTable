@@ -1,8 +1,8 @@
 {
-  "name": "my-module",
+  "name": "@creatiwity/datatable",
   "version": "1.0.0",
-  "description": "My new Nuxt module",
-  "repository": "Creatiwity/CreatDataTabl",
+  "description": "Creat Datatable",
+  "repository": "Creatiwity/CreatDataTable",
   "license": "MIT",
   "type": "module",
   "exports": {
@@ -40,5 +40,8 @@
     "eslint": "^8.38.0",
     "nuxt": "^3.4.2",
     "vitest": "^0.30.1"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }

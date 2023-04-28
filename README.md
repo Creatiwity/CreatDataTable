@@ -1,94 +1,76 @@
-<!--
-Get your module up and running quickly.
-
-Find and replace all on all files (CMD+SHIFT+F):
-- Name: My Module
-- Package name: my-module
-- Description: My new Nuxt module
--->
-
-# My Module
+# Creat Datatable
 
 [![npm version][npm-version-src]][npm-version-href]
 [![npm downloads][npm-downloads-src]][npm-downloads-href]
 [![License][license-src]][license-href]
 [![Nuxt][nuxt-src]][nuxt-href]
 
-My new Nuxt module for doing amazing things.
+Nuxt3 Typescript Simple Datatable that handles dynamic row content with generic typing
 
 - [✨ &nbsp;Release Notes](/CHANGELOG.md)
-<!-- - [🏀 Online playground](https://stackblitz.com/github/your-org/my-module?file=playground%2Fapp.vue) -->
-<!-- - [📖 &nbsp;Documentation](https://example.com) -->
 
 ## Features
 
 <!-- Highlight some of the features your module provide here -->
-- ⛰ &nbsp;Foo
-- 🚠 &nbsp;Bar
-- 🌲 &nbsp;Baz
+
+- &nbsp;Table
+- &nbsp;Generic typing
+- &nbsp;Dynamic row content
 
 ## Quick Setup
 
-1. Add `my-module` dependency to your project
+1. Add `@creatiwity/datatable` dependency to your project
 
 ```bash
 # Using pnpm
-pnpm add -D my-module
+pnpm add @creatiwity/datatable
 
 # Using yarn
-yarn add --dev my-module
+yarn add @creatiwity/datatable
 
 # Using npm
-npm install --save-dev my-module
+npm install @creatiwity/datatable
 ```
 
-2. Add `my-module` to the `modules` section of `nuxt.config.ts`
+2. Add `@creatiwity/datatable` to the `modules` section of `nuxt.config.ts`
 
 ```js
 export default defineNuxtConfig({
-  modules: [
-    'my-module'
-  ]
-})
+  modules: ["@creatiwity/datatable"],
+});
 ```
 
-That's it! You can now use My Module in your Nuxt app ✨
+That's it! You can now use Creat Datatable in your Nuxt app ✨
 
-## Development
+## Usage
 
-```bash
-# Install dependencies
-npm install
+```ts
+const dataTableInfos = {
+  headers: [
+    {
+      id: "name",
+      label: "Nom",
+    },
+  ],
+  data: [{ name: "Toto" }, { name: "Tata" }],
+};
+```
 
-# Generate type stubs
-npm run dev:prepare
-
-# Develop with the playground
-npm run dev
-
-# Build the playground
-npm run dev:build
-
-# Run ESLint
-npm run lint
-
-# Run Vitest
-npm run test
-npm run test:watch
-
-# Release new version
-npm run release
+```html
+<CreatDatable id="@creatiwity/datatable" :infos="dataTableInfos">
+  <template #name="category">
+    <strong>{{ category.data.name }}</strong>
+  </template>
+</CreatDatable>
 ```
 
 <!-- Badges -->
-[npm-version-src]: https://img.shields.io/npm/v/my-module/latest.svg?style=flat&colorA=18181B&colorB=28CF8D
-[npm-version-href]: https://npmjs.com/package/my-module
 
-[npm-downloads-src]: https://img.shields.io/npm/dm/my-module.svg?style=flat&colorA=18181B&colorB=28CF8D
-[npm-downloads-href]: https://npmjs.com/package/my-module
-
-[license-src]: https://img.shields.io/npm/l/my-module.svg?style=flat&colorA=18181B&colorB=28CF8D
-[license-href]: https://npmjs.com/package/my-module
-
+[npm-version-src]: https://img.shields.io/npm/v/@creatiwity/datatable/latest.svg?style=flat&colorA=18181B&colorB=28CF8D
+[npm-version-href]: https://npmjs.com/package/@creatiwity/datatable
+[npm-downloads-src]: https://img.shields.io/npm/dm/@creatiwity/datatable.svg?style=flat&colorA=18181B&colorB=28CF8D
+[npm-downloads-href]: https://npmjs.com/package/@creatiwity/datatable
+[license-src]: https://img.shields.io/npm/l/@creatiwity/datatable.svg?style=flat&colorA=18181B&colorB=28CF8D
+[license-href]: https://npmjs.com/package/@creatiwity/datatable
 [nuxt-src]: https://img.shields.io/badge/Nuxt-18181B?logo=nuxt.js
 [nuxt-href]: https://nuxt.com

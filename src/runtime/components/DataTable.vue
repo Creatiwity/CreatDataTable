@@ -13,16 +13,27 @@
         </tr>
       </thead>
       <tbody v-if="props.infos.data && props.infos.data.length > 0">
-        <tr v-for="(data, index) in props.infos.data" :key="`${id}-tr-${index}`">
-          <td v-for="header in props.infos.headers" :key="`${id}-td-${header.id}`">
-            <slot :name="header.id" :data="data"></slot>
+        <tr
+          v-for="(data, index) in props.infos.data"
+          :key="`${id}-tr-${index}`"
+        >
+          <td
+            v-for="header in props.infos.headers"
+            :key="`${id}-td-${header.id}`"
+          >
+            <slot
+              :name="header.id"
+              :data="data"
+            />
           </td>
         </tr>
       </tbody>
       <tbody v-else>
         <tr>
           <td colspan="8">
-            <p class="text-center">Aucune donnée</p>
+            <p class="text-center">
+              Aucune donnée
+            </p>
           </td>
         </tr>
       </tbody>
@@ -31,20 +42,12 @@
 </template>
 
 <script setup lang="ts" generic="T">
-export interface DTHeader {
-  id: string
-  label: string
-}
-
-export interface DTInfo<T> {
-  headers: DTHeader[]
-  data: T[]
-}
+import { DTInfo } from '../../types/datatabe';
 
 const props = defineProps<{
-  id: string
-  infos: DTInfo<T>
-}>()
+  id: string;
+  infos: DTInfo<T>;
+}>();
 </script>
 
 <style scoped lang="scss"></style>
