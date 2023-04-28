@@ -57,7 +57,7 @@ const dataTableInfos = {
 ```
 
 ```html
-<CreatDatable id="@creatiwity/datatable" :infos="dataTableInfos">
+<CreatDatable id="creat-datatable" :infos="dataTableInfos">
   <template #name="category">
     <strong>{{ category.data.name }}</strong>
   </template>
