@@ -43,5 +43,11 @@
   },
   "publishConfig": {
     "access": "public"
-  }
+  },
+  "keywords": [
+    "Typescript",
+    "Generic",
+    "Datatable",
+    "Nuxt3"
+  ]
 }
