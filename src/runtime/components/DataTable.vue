@@ -9,7 +9,7 @@
             scope="col"
             @click="onHeaderClicked(header.id)"
           >
-            <div class="create-datatable-header">
+            <div class="creat-datatable-header">
               <span>{{ header.label }}</span>
 
               <div class="sorting-icons">
@@ -26,7 +26,7 @@
         <tr
           v-for="(data, index) in props.infos.data"
           :key="`${id}-tr-${index}`"
-          class="create-datatable-row"
+          class="creat-datatable-row"
         >
           <td
             v-for="header in props.infos.headers"
@@ -90,7 +90,7 @@ function onHeaderClicked(headerId: string) {
   width: 100%;
 }
 
-.creat-datatable .create-datatable-header {
+.creat-datatable .creat-datatable-header {
   display: flex;
   flex-direction: row;
   cursor: pointer;
@@ -104,7 +104,11 @@ function onHeaderClicked(headerId: string) {
   margin-left: 3px;
 }
 
-.creat-datatable .create-datatable-row:nth-child(even) {
-  background-color: #dddddd;
+.creat-datatable .creat-datatable-row:nth-child(even) {
+  background-color: #ebe8e8;
 }
+
+.creat-datatable .creat-datatable-row:hover {
+  background-color: #dbd1d1;
+};
 </style>
