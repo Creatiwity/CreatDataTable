@@ -5,6 +5,8 @@
 [![License][license-src]][license-href]
 [![Nuxt][nuxt-src]][nuxt-href]
 
+:warning: This package is under development stay tuned. :warning:
+
 Nuxt3 Typescript Simple Datatable that handles dynamic row content with generic typing
 
 - [✨ &nbsp;Release Notes](/CHANGELOG.md)

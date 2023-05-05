@@ -45,9 +45,12 @@
     "access": "public"
   },
   "keywords": [
-    "Typescript",
-    "Generic",
-    "Datatable",
-    "Nuxt3"
+    "typescript",
+    "generic",
+    "datatable",
+    "nuxt3",
+    "nuxt",
+    "vue",
+    "data-table"
   ]
 }
