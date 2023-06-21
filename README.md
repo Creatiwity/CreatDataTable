@@ -18,6 +18,7 @@ Nuxt3 Typescript Simple Datatable that handles dynamic row content with generic 
 - &nbsp;Table
 - &nbsp;Generic typing
 - &nbsp;Dynamic row content
+- &nbsp;Sorting
 
 ## Quick Setup
 

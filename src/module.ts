@@ -1,4 +1,9 @@
-import { defineNuxtModule, addComponent, createResolver } from "@nuxt/kit";
+import {
+  defineNuxtModule,
+  addComponent,
+  createResolver,
+  addImportsDir,
+} from "@nuxt/kit";
 
 // Module options TypeScript interface definition
 export interface ModuleOptions {}
@@ -17,5 +22,7 @@ export default defineNuxtModule<ModuleOptions>({
       name: "CreatDatable", // name of the component to be used in vue templates
       filePath: resolver.resolve("runtime/components/DataTable.vue"),
     });
+
+    addImportsDir(resolver.resolve("runtime/types"));
   },
 });

@@ -32,19 +32,14 @@
             v-for="header in props.infos.headers"
             :key="`${id}-td-${header.id}`"
           >
-            <slot
-              :name="header.id"
-              :data="data"
-            />
+            <slot :name="header.id" :data="data" />
           </td>
         </tr>
       </tbody>
       <tbody v-else>
         <tr>
           <td colspan="8">
-            <p class="text-center">
-              Aucune donnée
-            </p>
+            <p class="text-center">Aucune donnée</p>
           </td>
         </tr>
       </tbody>
@@ -53,7 +48,7 @@
 </template>
 
 <script setup lang="ts" generic="T">
-import { DTInfo, SortDirection } from "../../types/datatabe";
+import { DTInfo, SortDirection } from "../types/datatable";
 import SortingIcon from "./SortingIcon.vue";
 import { computed } from "vue";
 
@@ -110,5 +105,5 @@ function onHeaderClicked(headerId: string) {
 
 .creat-datatable .creat-datatable-row:hover {
   background-color: #dbd1d1;
-};
+}
 </style>
