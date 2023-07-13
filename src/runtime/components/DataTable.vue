@@ -1,6 +1,9 @@
 <template>
   <div class="creat-datatable table-responsive">
-    <table class="table">
+    <table 
+      class="table" 
+      :class="tableClass"
+    >
       <thead>
         <tr>
           <th
@@ -32,14 +35,19 @@
             v-for="header in props.infos.headers"
             :key="`${id}-td-${header.id}`"
           >
-            <slot :name="header.id" :data="data" />
+            <slot 
+              :name="header.id" 
+              :data="data"
+            />
           </td>
         </tr>
       </tbody>
       <tbody v-else>
         <tr>
           <td colspan="8">
-            <p class="text-center">Aucune donnée</p>
+            <p class="text-center">
+              Aucune donnée
+            </p>
           </td>
         </tr>
       </tbody>
@@ -56,6 +64,7 @@ const props = defineProps<{
   id: string;
   infos: DTInfo<T>;
   sort?: [string, SortDirection];
+  tableClass?: string;
 }>();
 
 const emit = defineEmits(["update:sort"]);
