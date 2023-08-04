@@ -1,9 +1,6 @@
 <template>
   <div class="creat-datatable table-responsive">
-    <table 
-      class="table" 
-      :class="tableClass"
-    >
+    <table class="table" :class="tableClass">
       <thead>
         <tr>
           <th
@@ -15,7 +12,7 @@
             <div class="creat-datatable-header">
               <span>{{ header.label }}</span>
 
-              <div class="sorting-icons">
+              <div v-if="header.sortable ?? true" class="sorting-icons">
                 <SortingIcon
                   v-show="sortId === header.id && sortDirection"
                   :direction="sortDirection"
@@ -35,19 +32,14 @@
             v-for="header in props.infos.headers"
             :key="`${id}-td-${header.id}`"
           >
-            <slot 
-              :name="header.id" 
-              :data="data"
-            />
+            <slot :name="header.id" :data="data" />
           </td>
         </tr>
       </tbody>
       <tbody v-else>
         <tr>
           <td colspan="8">
-            <p class="text-center">
-              Aucune donnée
-            </p>
+            <p class="text-center">Aucune donnée</p>
           </td>
         </tr>
       </tbody>
@@ -80,6 +72,11 @@ const sortDirection = computed(() =>
 );
 
 function onHeaderClicked(headerId: string) {
+  const header = props.infos.headers.find((header) => header.id === headerId);
+  if (!header || !(header.sortable ?? true)) {
+    return;
+  }
+
   if (sortModel.value && sortModel.value[0] === headerId) {
     sortModel.value = [headerId, sortModel.value[1] === "asc" ? "desc" : "asc"];
   } else {
