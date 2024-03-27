@@ -16,6 +16,7 @@
               <slot
                 v-if="slots[`header-${header.id}`]"
                 :name="`header-${header.id}`"
+                :data="header"
               />
               <div v-else>
                 <span>{{ header.label }}</span>
