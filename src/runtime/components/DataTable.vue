@@ -9,10 +9,13 @@
             scope="col"
             @click="onHeaderClicked(header.id)"
           >
-            <div class="creat-datatable-header">
+            <div
+              class="creat-datatable-header"
+              :class="{ 'creat-datatable-header-clickable': header.sortable }"
+            >
               <span>{{ header.label }}</span>
 
-              <div v-if="header.sortable ?? true" class="sorting-icons">
+              <div v-if="header.sortable ?? false" class="sorting-icons">
                 <SortingIcon
                   v-show="sortId === header.id && sortDirection"
                   :direction="sortDirection"
@@ -94,6 +97,9 @@ function onHeaderClicked(headerId: string) {
 .creat-datatable .creat-datatable-header {
   display: flex;
   flex-direction: row;
+}
+
+.creat-datatable .creat-datatable-header-clickable {
   cursor: pointer;
 }
 
