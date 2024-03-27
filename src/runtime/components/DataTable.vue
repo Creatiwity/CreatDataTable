@@ -9,14 +9,23 @@
             scope="col"
             @click="onHeaderClicked(header.id)"
           >
-            <div class="creat-datatable-header">
-              <span>{{ header.label }}</span>
+            <div
+              class="creat-datatable-header"
+              :class="{ 'creat-datatable-header-clickable': header.sortable }"
+            >
+              <slot
+                v-if="slots[`header-${header.id}`]"
+                :name="`header-${header.id}`"
+              />
+              <div v-else>
+                <span>{{ header.label }}</span>
 
-              <div v-if="header.sortable ?? true" class="sorting-icons">
-                <SortingIcon
-                  v-show="sortId === header.id && sortDirection"
-                  :direction="sortDirection"
-                />
+                <div v-if="header.sortable ?? false" class="sorting-icons">
+                  <SortingIcon
+                    v-show="sortId === header.id && sortDirection"
+                    :direction="sortDirection"
+                  />
+                </div>
               </div>
             </div>
           </th>
@@ -50,7 +59,7 @@
 <script setup lang="ts" generic="T">
 import { DTInfo, SortDirection } from "../types/datatable";
 import SortingIcon from "./SortingIcon.vue";
-import { computed } from "vue";
+import { computed, useSlots } from "vue";
 
 const props = defineProps<{
   id: string;
@@ -60,6 +69,8 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits(["update:sort"]);
+
+const slots = useSlots();
 
 const sortModel = computed({
   get: () => props.sort,
@@ -94,6 +105,9 @@ function onHeaderClicked(headerId: string) {
 .creat-datatable .creat-datatable-header {
   display: flex;
   flex-direction: row;
+}
+
+.creat-datatable .creat-datatable-header-clickable {
   cursor: pointer;
 }
 

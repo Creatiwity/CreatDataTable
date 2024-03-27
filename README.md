@@ -61,6 +61,10 @@ const dataTableInfos = {
 
 ```html
 <CreatDatable id="creat-datatable" :infos="dataTableInfos">
+  <template #header-name="category">
+    <span>{{ category.data.name }}</span>
+    <input />
+  </template>
   <template #name="category">
     <strong>{{ category.data.name }}</strong>
   </template>
