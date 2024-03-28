@@ -9,32 +9,37 @@
             scope="col"
             @click="onHeaderClicked(header.id)"
           >
+            <slot
+              v-if="slots[`header-${header.id}`]"
+              :name="`header-${header.id}`"
+              :data="header"
+            />
             <div
+              v-else
               class="creat-datatable-header"
               :class="{ 'creat-datatable-header-clickable': header.sortable }"
             >
-              <slot
-                v-if="slots[`header-${header.id}`]"
-                :name="`header-${header.id}`"
-                :data="header"
-              />
-              <div v-else>
-                <span>{{ header.label }}</span>
-
-                <div v-if="header.sortable ?? false" class="sorting-icons">
-                  <SortingIcon
-                    v-show="sortId === header.id && sortDirection"
-                    :direction="sortDirection"
-                  />
-                </div>
+              <span>{{ header.label }}</span>
+              <div v-if="header.sortable ?? false" class="sorting-icons">
+                <SortingIcon
+                  v-show="sortId === header.id && sortDirection"
+                  :direction="sortDirection"
+                />
               </div>
             </div>
+            <input
+              v-if="header.filtering ?? false"
+              v-model="filtersModel[header.id]"
+              type="search"
+              class="creat-datatable-header-input"
+              :class="props.filterClass"
+            >
           </th>
         </tr>
       </thead>
-      <tbody v-if="props.infos.data && props.infos.data.length > 0">
+      <tbody v-if="filteredData && filteredData.length > 0">
         <tr
-          v-for="(data, index) in props.infos.data"
+          v-for="(data, index) in filteredData"
           :key="`${id}-tr-${index}`"
           class="creat-datatable-row"
         >
@@ -48,8 +53,9 @@
       </tbody>
       <tbody v-else>
         <tr>
-          <td colspan="8">
-            <p class="text-center">Aucune donnée</p>
+          <td :colspan="props.infos.headers.length">
+            <slot v-if="slots['empty-state']" name="empty-state" />
+            <p v-else class="text-center">Aucune donnée</p>
           </td>
         </tr>
       </tbody>
@@ -58,7 +64,7 @@
 </template>
 
 <script setup lang="ts" generic="T">
-import { DTInfo, SortDirection } from "../types/datatable";
+import { DTInfo, SortDirection, FilterType } from "../types/datatable";
 import SortingIcon from "./SortingIcon.vue";
 import { computed, useSlots } from "vue";
 
@@ -66,12 +72,38 @@ const props = defineProps<{
   id: string;
   infos: DTInfo<T>;
   sort?: [string, SortDirection];
+  filters?: Record<string, string>;
+  filterType?: FilterType;
+  filterClass?: string;
   tableClass?: string;
 }>();
 
-const emit = defineEmits(["update:sort"]);
-
 const slots = useSlots();
+
+const emit = defineEmits(["update:filters", "update:sort"]);
+
+const filtersModel = computed({
+  get: () => props.filters ?? ({} as Record<string, string>),
+  set: (value) => emit("update:filters", value),
+});
+
+const filteredData = computed(() => {
+  if (props.filterType === "remote") {
+    return props.infos.data;
+  }
+
+  return (props.infos.data as Record<string, string>[]).filter(
+    (item: Record<string, string>) =>
+      props.infos.headers.every(
+        (header) =>
+          !filtersModel.value[header.id] ||
+          item[header.id]
+            .toString()
+            .toLowerCase()
+            .startsWith(filtersModel.value[header.id].toLowerCase())
+      )
+  );
+});
 
 const sortModel = computed({
   get: () => props.sort,
@@ -110,6 +142,10 @@ function onHeaderClicked(headerId: string) {
 
 .creat-datatable .creat-datatable-header-clickable {
   cursor: pointer;
+}
+
+.creat-datatable .creat-datatable-header-input {
+  display: flex;
 }
 
 .creat-datatable table thead tr th .sorting-icons {
