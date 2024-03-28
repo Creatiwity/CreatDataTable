@@ -1,45 +1,15 @@
 <template>
   <div class="creat-datatable table-responsive">
     <table class="table" :class="tableClass">
-      <thead>
-        <tr>
-          <th
-            v-for="header in props.infos.headers"
-            :key="`${props.id}-DT-header-${header.id}`"
-            scope="col"
-            @click="onHeaderClicked(header.id)"
-          >
-            <slot
-              v-if="slots[`header-${header.id}`]"
-              :name="`header-${header.id}`"
-              :data="header"
-            />
-            <div
-              v-else
-              class="creat-datatable-header"
-              :class="{ 'creat-datatable-header-clickable': header.sortable }"
-            >
-              <span>{{ header.label }}</span>
-              <div v-if="header.sortable ?? false" class="sorting-icons">
-                <SortingIcon
-                  v-show="sortId === header.id && sortDirection"
-                  :direction="sortDirection"
-                />
-              </div>
-            </div>
-            <input
-              v-if="header.filtering ?? false"
-              v-model="filtersModel[header.id]"
-              type="search"
-              class="creat-datatable-header-input"
-              :class="props.filterClass"
-            />
-          </th>
-        </tr>
-      </thead>
-      <tbody v-if="filteredData && filteredData.length > 0">
+      <TableHeader
+        :id="props.id"
+        v-model:sort="sortModel"
+        v-model:filters="filtersModel"
+        :headers="props.infos.headers"
+      />
+      <tbody v-if="currentPageData && currentPageData.length > 0">
         <tr
-          v-for="(data, index) in filteredData"
+          v-for="(data, index) in currentPageData"
           :key="`${id}-tr-${index}`"
           class="creat-datatable-row"
         >
@@ -51,22 +21,22 @@
           </td>
         </tr>
       </tbody>
-      <tbody v-else>
-        <tr>
-          <td :colspan="props.infos.headers.length">
-            <slot v-if="slots['empty-state']" name="empty-state" />
-            <p v-else class="text-center">Aucune donnée</p>
-          </td>
-        </tr>
-      </tbody>
+      <TableEmpty v-else :headers-nb="props.infos.headers.length" />
     </table>
+    <TablePagination
+      :current-page="currentPage"
+      :max-page="maxPage"
+      @change-page="changePage"
+    />
   </div>
 </template>
 
 <script setup lang="ts" generic="T">
 import { DTInfo, SortDirection, FilterType } from "../types/datatable";
-import SortingIcon from "./SortingIcon.vue";
-import { computed, useSlots } from "vue";
+import TablePagination from "./TablePagination.vue";
+import TableEmpty from "./TableEmpty.vue";
+import TableHeader from "./TableHeader.vue";
+import { computed, ref } from "vue";
 
 const props = defineProps<{
   id: string;
@@ -76,12 +46,14 @@ const props = defineProps<{
   filterType?: FilterType;
   filterClass?: string;
   tableClass?: string;
+  pagination?: {
+    itemsPerPage: number;
+  };
 }>();
-
-const slots = useSlots();
 
 const emit = defineEmits(["update:filters", "update:sort"]);
 
+// Filtering
 const filtersModel = computed({
   get: () => props.filters ?? {},
   set: (value) => emit("update:filters", value),
@@ -104,28 +76,30 @@ const filteredData = computed(() => {
   );
 });
 
+// Pagination
+const currentPage = ref(1);
+
+const ITEMS_PER_PAGE = props.pagination?.itemsPerPage ?? 5;
+
+const maxPage = computed(() => {
+  return Math.ceil(props.infos.data.length / ITEMS_PER_PAGE);
+});
+
+const currentPageData = computed(() => {
+  const start = (currentPage.value - 1) * ITEMS_PER_PAGE;
+  const end = start + ITEMS_PER_PAGE;
+  return props.infos.data.slice(start, end);
+});
+
+function changePage(page: number) {
+  currentPage.value = page;
+}
+
+// Sorting
 const sortModel = computed({
   get: () => props.sort,
   set: (value) => emit("update:sort", value),
 });
-
-const sortId = computed(() => (sortModel.value ? sortModel.value[0] : null));
-const sortDirection = computed(() =>
-  sortModel.value ? sortModel.value[1] : null
-);
-
-function onHeaderClicked(headerId: string) {
-  const header = props.infos.headers.find((header) => header.id === headerId);
-  if (!header || !(header.sortable ?? true)) {
-    return;
-  }
-
-  if (sortModel.value && sortModel.value[0] === headerId) {
-    sortModel.value = [headerId, sortModel.value[1] === "asc" ? "desc" : "asc"];
-  } else {
-    sortModel.value = [headerId, "asc"];
-  }
-}
 </script>
 
 <style scoped>
