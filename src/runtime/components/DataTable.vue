@@ -33,7 +33,7 @@
               type="search"
               class="creat-datatable-header-input"
               :class="props.filterClass"
-            >
+            />
           </th>
         </tr>
       </thead>
@@ -72,7 +72,7 @@ const props = defineProps<{
   id: string;
   infos: DTInfo<T>;
   sort?: [string, SortDirection];
-  filters?: Record<string, string>;
+  filters?: { [key: string]: string };
   filterType?: FilterType;
   filterClass?: string;
   tableClass?: string;
@@ -83,7 +83,7 @@ const slots = useSlots();
 const emit = defineEmits(["update:filters", "update:sort"]);
 
 const filtersModel = computed({
-  get: () => props.filters ?? ({} as Record<string, string>),
+  get: () => props.filters ?? {},
   set: (value) => emit("update:filters", value),
 });
 
@@ -92,16 +92,15 @@ const filteredData = computed(() => {
     return props.infos.data;
   }
 
-  return (props.infos.data as Record<string, string>[]).filter(
-    (item: Record<string, string>) =>
-      props.infos.headers.every(
-        (header) =>
-          !filtersModel.value[header.id] ||
-          item[header.id]
-            .toString()
-            .toLowerCase()
-            .startsWith(filtersModel.value[header.id].toLowerCase())
-      )
+  return props.infos.data.filter((item: any) =>
+    props.infos.headers.every(
+      (header) =>
+        !filtersModel.value[header.id] ||
+        item[header.id]
+          .toString()
+          .toLowerCase()
+          .startsWith(filtersModel.value[header.id].toLowerCase())
+    )
   );
 });
 
