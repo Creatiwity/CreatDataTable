@@ -6,10 +6,20 @@
         v-model:sort="sortModel"
         v-model:filters="filtersModel"
         :headers="props.infos.headers"
-      />
-      <tbody v-if="currentPageData && currentPageData.length > 0">
+      >
+        <template
+          v-for="slotName in Object.keys($slots).filter((slot) =>
+            slot.startsWith('header-')
+          )"
+          :key="slotName"
+          #[slotName]="slotData"
+        >
+          <slot :name="slotName" :data="slotData.data" />
+        </template>
+      </TableHeader>
+      <tbody v-if="filteredData && filteredData.length > 0">
         <tr
-          v-for="(data, index) in currentPageData"
+          v-for="(data, index) in filteredData"
           :key="`${id}-tr-${index}`"
           class="creat-datatable-row"
         >
@@ -21,7 +31,11 @@
           </td>
         </tr>
       </tbody>
-      <TableEmpty v-else :headers-nb="props.infos.headers.length" />
+      <TableEmpty v-else :headers-nb="props.infos.headers.length">
+        <template #empty-state>
+          <slot name="empty-state" />
+        </template>
+      </TableEmpty>
     </table>
     <TablePagination
       :current-page="currentPage"
@@ -43,8 +57,10 @@ const props = defineProps<{
   infos: DTInfo<T>;
   sort?: [string, SortDirection];
   filters?: { [key: string]: string };
-  filterType?: FilterType;
-  filterClass?: string;
+  filtering?: {
+    filterType?: FilterType;
+    filterClass?: string;
+  };
   tableClass?: string;
   pagination?: {
     itemsPerPage: number;
@@ -60,7 +76,7 @@ const filtersModel = computed({
 });
 
 const filteredData = computed(() => {
-  if (props.filterType === "remote") {
+  if (props.filtering?.filterType === "remote") {
     return props.infos.data;
   }
 
@@ -106,27 +122,6 @@ const sortModel = computed({
 .creat-datatable table {
   border-collapse: collapse;
   width: 100%;
-}
-
-.creat-datatable .creat-datatable-header {
-  display: flex;
-  flex-direction: row;
-}
-
-.creat-datatable .creat-datatable-header-clickable {
-  cursor: pointer;
-}
-
-.creat-datatable .creat-datatable-header-input {
-  display: flex;
-}
-
-.creat-datatable table thead tr th .sorting-icons {
-  width: 16px;
-  height: 16px;
-  margin-top: auto;
-  margin-bottom: auto;
-  margin-left: 3px;
 }
 
 .creat-datatable .creat-datatable-row:nth-child(even) {

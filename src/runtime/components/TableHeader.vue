@@ -38,7 +38,7 @@
 </template>
 
 <script setup lang="ts" generic="T">
-import { SortDirection, FilterType, DTHeader } from "../types/datatable";
+import { SortDirection, DTHeader } from "../types/datatable";
 import SortingIcon from "./SortingIcon.vue";
 import { computed, useSlots } from "vue";
 
@@ -47,7 +47,6 @@ const props = defineProps<{
   headers: DTHeader[];
   sort?: [string, SortDirection];
   filters: { [key: string]: string };
-  filterType?: FilterType;
   filterClass?: string;
 }>();
 
@@ -57,7 +56,7 @@ const emit = defineEmits(["update:filters", "update:sort"]);
 
 // Filtering
 const filtersModel = computed({
-  get: () => props.filters,
+  get: () => props.filters ?? {},
   set: (value) => emit("update:filters", value),
 });
 
@@ -87,37 +86,24 @@ function onHeaderClicked(headerId: string) {
 </script>
 
 <style scoped>
-.creat-datatable table {
-  border-collapse: collapse;
-  width: 100%;
-}
-
-.creat-datatable .creat-datatable-header {
+.creat-datatable-header {
   display: flex;
   flex-direction: row;
 }
 
-.creat-datatable .creat-datatable-header-clickable {
+.creat-datatable-header-clickable {
   cursor: pointer;
 }
 
-.creat-datatable .creat-datatable-header-input {
+.creat-datatable-header-input {
   display: flex;
 }
 
-.creat-datatable table thead tr th .sorting-icons {
+table thead tr th .sorting-icons {
   width: 16px;
   height: 16px;
   margin-top: auto;
   margin-bottom: auto;
   margin-left: 3px;
-}
-
-.creat-datatable .creat-datatable-row:nth-child(even) {
-  background-color: #ebe8e8;
-}
-
-.creat-datatable .creat-datatable-row:hover {
-  background-color: #dbd1d1;
 }
 </style>
