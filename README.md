@@ -57,16 +57,26 @@ const dataTableInfos = {
   ],
   data: [{ name: "Toto" }, { name: "Tata" }],
 };
+
+const filtering = ref({});
 ```
 
 ```html
-<CreatDatable id="creat-datatable" :infos="dataTableInfos">
+<CreatDatable
+  id="creat-datatable"
+  :infos="dataTableInfos"
+  v-model:filters="filtering"
+  filter-type="remote"
+>
   <template #header-name="category">
     <span>{{ category.data.name }}</span>
     <input />
   </template>
   <template #name="category">
     <strong>{{ category.data.name }}</strong>
+  </template>
+  <template #empty-state>
+    <p>No data</p>
   </template>
 </CreatDatable>
 ```
