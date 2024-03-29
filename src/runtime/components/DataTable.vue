@@ -56,10 +56,10 @@
 
 <script setup lang="ts" generic="T">
 import {
-  DTInfo,
-  SortDirection,
-  FilterType,
-  PaginationType,
+  type DTInfo,
+  type SortDirection,
+  type FilterType,
+  type PaginationType,
 } from "../types/datatable";
 import TablePagination from "./TablePagination.vue";
 import TableEmpty from "./TableEmpty.vue";
