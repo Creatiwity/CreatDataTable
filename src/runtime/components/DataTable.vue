@@ -17,9 +17,9 @@
           <slot :name="slotName" :data="slotData.data" />
         </template>
       </TableHeader>
-      <tbody v-if="filteredData && filteredData.length > 0">
+      <tbody v-if="tableData && tableData.length > 0">
         <tr
-          v-for="(data, index) in filteredData"
+          v-for="(data, index) in tableData"
           :key="`${id}-tr-${index}`"
           class="creat-datatable-row"
         >
@@ -38,36 +38,56 @@
       </TableEmpty>
     </table>
     <TablePagination
-      :current-page="currentPage"
+      v-if="props.paginationConfig"
+      :current-page="currentPageModel"
       :max-page="maxPage"
       @change-page="changePage"
-    />
+    >
+      <template #pagination="{ decreasePage, increasePage }">
+        <slot
+          name="pagination"
+          :decrease-page="decreasePage"
+          :increase-page="increasePage"
+        />
+      </template>
+    </TablePagination>
   </div>
 </template>
 
 <script setup lang="ts" generic="T">
-import { DTInfo, SortDirection, FilterType } from "../types/datatable";
+import {
+  DTInfo,
+  SortDirection,
+  FilterType,
+  PaginationType,
+} from "../types/datatable";
 import TablePagination from "./TablePagination.vue";
 import TableEmpty from "./TableEmpty.vue";
 import TableHeader from "./TableHeader.vue";
-import { computed, ref } from "vue";
+import { computed } from "vue";
 
 const props = defineProps<{
   id: string;
   infos: DTInfo<T>;
   sort?: [string, SortDirection];
   filters?: { [key: string]: string };
-  filtering?: {
+  filtersConfig?: {
     filterType?: FilterType;
     filterClass?: string;
   };
-  tableClass?: string;
-  pagination?: {
-    itemsPerPage: number;
+  currentPage?: number;
+  paginationConfig?: {
+    paginationType?: PaginationType;
+    itemsPerPage?: number;
   };
+  tableClass?: string;
 }>();
 
-const emit = defineEmits(["update:filters", "update:sort"]);
+const emit = defineEmits([
+  "update:filters",
+  "update:currentPage",
+  "update:sort",
+]);
 
 // Filtering
 const filtersModel = computed({
@@ -76,7 +96,7 @@ const filtersModel = computed({
 });
 
 const filteredData = computed(() => {
-  if (props.filtering?.filterType === "remote") {
+  if (props.filtersConfig?.filterType === "remote") {
     return props.infos.data;
   }
 
@@ -93,28 +113,46 @@ const filteredData = computed(() => {
 });
 
 // Pagination
-const currentPage = ref(1);
-
-const ITEMS_PER_PAGE = props.pagination?.itemsPerPage ?? 5;
+const ITEMS_PER_PAGE = props.paginationConfig?.itemsPerPage ?? 5;
 
 const maxPage = computed(() => {
-  return Math.ceil(props.infos.data.length / ITEMS_PER_PAGE);
+  return Math.ceil(filteredData.value.length / ITEMS_PER_PAGE);
 });
 
-const currentPageData = computed(() => {
-  const start = (currentPage.value - 1) * ITEMS_PER_PAGE;
-  const end = start + ITEMS_PER_PAGE;
-  return props.infos.data.slice(start, end);
+const currentPageModel = computed({
+  get: () => props.currentPage ?? 1,
+  set: (value) => {
+    emit("update:currentPage", value);
+  },
 });
 
 function changePage(page: number) {
-  currentPage.value = page;
+  currentPageModel.value = page;
 }
 
 // Sorting
 const sortModel = computed({
   get: () => props.sort,
   set: (value) => emit("update:sort", value),
+});
+
+// Table data
+const tableData = computed(() => {
+  let data = props.infos.data;
+
+  data = filteredData.value;
+
+  if (
+    props.paginationConfig &&
+    props.paginationConfig.paginationType !== "remote"
+  ) {
+    const start = (currentPageModel.value - 1) * ITEMS_PER_PAGE;
+    const end = start + ITEMS_PER_PAGE;
+
+    data = data.slice(start, end);
+  }
+
+  return data;
 });
 </script>
 

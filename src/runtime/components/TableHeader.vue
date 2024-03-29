@@ -5,6 +5,7 @@
         v-for="header in props.headers"
         :key="`${props.id}-DT-header-${header.id}`"
         scope="col"
+        :class="header.thClass"
         @click="onHeaderClicked(header.id)"
       >
         <slot
