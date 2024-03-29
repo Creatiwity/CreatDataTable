@@ -8,13 +8,10 @@
         :headers="props.infos.headers"
       >
         <template
-          v-for="slotName in Object.keys($slots).filter((slot) =>
-            slot.startsWith('header-')
-          )"
-          :key="slotName"
-          #[slotName]="slotData"
+          v-for="header in props.infos.headers"
+          :key="`${id}-header-${header.id}`"
         >
-          <slot :name="slotName" :data="slotData.data" />
+          <slot :name="`header-${header.id}`" :data="header" />
         </template>
       </TableHeader>
       <tbody v-if="tableData && tableData.length > 0">
