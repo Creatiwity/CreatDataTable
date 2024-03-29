@@ -66,7 +66,15 @@ const filtering = ref({});
   id="creat-datatable"
   :infos="dataTableInfos"
   v-model:filters="filtering"
-  filter-type="remote"
+  v-model:currentPage="currentPage"
+  :filters-config="{
+    filterType: 'local',
+    filterClass: '',
+  }"
+  :pagination-config="{
+    paginationType: 'local',
+    itemsPerPage: 3,
+  }"
 >
   <template #header-name="category">
     <span>{{ category.data.name }}</span>
@@ -77,6 +85,11 @@ const filtering = ref({});
   </template>
   <template #empty-state>
     <p>No data</p>
+  </template>
+  <template #pagination="{ decreasePage, increasePage }">
+    <button @click="decreasePage">Moins</button>
+    <span>Page {{ currentPage }} of </span>
+    <button @click="increasePage">Plus</button>
   </template>
 </CreatDatable>
 ```
