@@ -3,6 +3,7 @@ export interface DTHeader {
   label: string;
   sortable?: boolean;
   filtering?: boolean;
+  thClass?: string;
 }
 
 export interface DTInfo<T> {
@@ -13,3 +14,4 @@ export interface DTInfo<T> {
 export type SortDirection = "asc" | "desc";
 
 export type FilterType = "remote" | "local";
+export type PaginationType = "remote" | "local";
