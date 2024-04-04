@@ -105,7 +105,7 @@ const filteredData = computed(() => {
         item[header.id]
           .toString()
           .toLowerCase()
-          .startsWith(filtersModel.value[header.id].toLowerCase())
+          .includes(filtersModel.value[header.id].toLowerCase())
     )
   );
 });
