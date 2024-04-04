@@ -13,5 +13,4 @@ export interface DTInfo<T> {
 
 export type SortDirection = "asc" | "desc";
 
-export type FilterType = "remote" | "local";
-export type PaginationType = "remote" | "local";
+export type DataTableType = "remote" | "local";

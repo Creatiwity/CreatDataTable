@@ -56,8 +56,7 @@
 import {
   type DTInfo,
   type SortDirection,
-  type FilterType,
-  type PaginationType,
+  type DataTableType,
 } from "../types/datatable";
 import TablePagination from "./TablePagination.vue";
 import TableEmpty from "./TableEmpty.vue";
@@ -69,13 +68,12 @@ const props = defineProps<{
   infos: DTInfo<T>;
   sort?: [string, SortDirection];
   filters?: { [key: string]: string };
+  type?: DataTableType;
   filtersConfig?: {
-    filterType?: FilterType;
     filtersClass?: string;
   };
   currentPage?: number;
   paginationConfig?: {
-    paginationType?: PaginationType;
     itemsPerPage?: number;
   };
   tableClass?: string;
@@ -94,7 +92,7 @@ const filtersModel = computed({
 });
 
 const filteredData = computed(() => {
-  if (props.filtersConfig?.filterType === "remote") {
+  if (props.type === "remote") {
     return props.infos.data;
   }
 
@@ -140,10 +138,7 @@ const tableData = computed(() => {
 
   data = filteredData.value;
 
-  if (
-    props.paginationConfig &&
-    props.paginationConfig.paginationType !== "remote"
-  ) {
+  if (props.type !== "remote") {
     const start = (currentPageModel.value - 1) * ITEMS_PER_PAGE;
     const end = start + ITEMS_PER_PAGE;
 

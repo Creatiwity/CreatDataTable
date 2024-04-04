@@ -67,12 +67,11 @@ const filtering = ref({});
   :infos="dataTableInfos"
   v-model:filters="filtering"
   v-model:currentPage="currentPage"
+  type="remote"
   :filters-config="{
-    filterType: 'local',
     filtersClass: '',
   }"
   :pagination-config="{
-    paginationType: 'local',
     itemsPerPage: 3,
   }"
 >
