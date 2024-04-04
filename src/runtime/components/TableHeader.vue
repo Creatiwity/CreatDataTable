@@ -4,7 +4,7 @@
       <th v-if="props.checkboxConfig">
         <input
           type="checkbox"
-          :class="props.checkboxConfig.checkboxClass"
+          :class="props.checkboxConfig.class"
           :checked="checkboxModel.length >= props.tableData.length"
           @click="updateHeaderCheckbox"
         >
@@ -40,6 +40,7 @@
           type="search"
           class="creat-datatable-header-input"
           :class="props.filtersClass"
+          @input="onInput"
         >
       </th>
     </tr>
@@ -47,7 +48,7 @@
 </template>
 
 <script setup lang="ts" generic="T">
-import { SortDirection, DTHeader } from "../types/datatable";
+import { SortDirection, DTHeader, CheckboxConfig } from "../types/datatable";
 import SortingIcon from "./SortingIcon.vue";
 import { computed, useSlots } from "vue";
 
@@ -57,10 +58,7 @@ const props = defineProps<{
   sort?: [string, SortDirection];
   filters: { [key: string]: string };
   checkbox: string[];
-  checkboxConfig?: {
-    id: string;
-    checkboxClass?: string;
-  };
+  checkboxConfig?: CheckboxConfig;
   filtersClass?: string;
   tableData: any;
 }>();
@@ -99,7 +97,13 @@ const filtersModel = computed({
   set: (value) => emit("update:filters", value),
 });
 
-// checkbox
+function onInput() {
+  if (props.checkboxConfig?.overFilterMode === "delete") {
+    checkboxModel.value = [];
+  }
+}
+
+// Checkbox
 const checkboxModel = computed({
   get: () => props.checkbox,
   set: (value) => emit("update:checkbox", value),

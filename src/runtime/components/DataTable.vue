@@ -7,7 +7,7 @@
         v-model:filters="filtersModel"
         v-model:checkbox="checkboxModel"
         :headers="props.infos.headers"
-        :filters-class="props.filtersConfig?.filtersClass"
+        :filters-class="props.filtersConfig?.class"
         :checkbox-config="props.checkboxConfig"
         :table-data="tableData"
       >
@@ -27,7 +27,7 @@
           <td v-if="props.checkboxConfig">
             <input
               type="checkbox"
-              :class="props.checkboxConfig.checkboxClass"
+              :class="props.checkboxConfig.class"
               :value="data[props.checkboxConfig.id]"
               :checked="checkboxModel.includes(data[props.checkboxConfig.id])"
               @click="updateCheckbox"
@@ -73,6 +73,9 @@ import {
   type DTInfo,
   type SortDirection,
   type DTType,
+  CheckboxConfig,
+  PaginationConfig,
+  FiltersConfig,
 } from "../types/datatable";
 import TablePagination from "./TablePagination.vue";
 import TableEmpty from "./TableEmpty.vue";
@@ -87,16 +90,9 @@ const props = defineProps<{
   currentPage?: number;
   checkbox?: string[];
   type?: DTType;
-  filtersConfig?: {
-    filtersClass?: string;
-  };
-  paginationConfig?: {
-    itemsPerPage?: number;
-  };
-  checkboxConfig?: {
-    id: string;
-    checkboxClass?: string;
-  };
+  filtersConfig?: FiltersConfig;
+  paginationConfig?: PaginationConfig;
+  checkboxConfig?: CheckboxConfig;
   tableClass?: string;
 }>();
 
