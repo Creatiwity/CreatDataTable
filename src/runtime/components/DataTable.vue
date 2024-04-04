@@ -24,6 +24,10 @@
           <td
             v-for="header in props.infos.headers"
             :key="`${id}-td-${header.id}`"
+            :class="
+              props.infos.content.find((content) => content.id === header.id)
+                ?.tdClass
+            "
           >
             <slot :name="header.id" :data="data" />
           </td>
