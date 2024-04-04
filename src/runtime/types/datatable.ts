@@ -11,12 +11,16 @@ export interface DTContent {
   tdClass?: string;
 }
 
-export interface DTInfo<T> {
+export interface DTInfo {
   headers: DTHeader[];
-  data: T[];
+  data: DTData[];
   content: DTContent[];
+}
+
+export interface DTData {
+  [key: string]: any;
 }
 
 export type SortDirection = "asc" | "desc";
 
-export type DataTableType = "remote" | "local";
+export type DTType = "remote" | "local";

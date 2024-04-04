@@ -1,6 +1,14 @@
 <template>
   <thead>
     <tr>
+      <th v-if="props.checkboxConfig">
+        <input
+          type="checkbox"
+          :class="props.checkboxConfig.checkboxClass"
+          :checked="checkboxModel.length >= props.tableData.length"
+          @click="updateHeaderCheckbox"
+        >
+      </th>
       <th
         v-for="header in props.headers"
         :key="`${props.id}-DT-header-${header.id}`"
@@ -48,18 +56,18 @@ const props = defineProps<{
   headers: DTHeader[];
   sort?: [string, SortDirection];
   filters: { [key: string]: string };
+  checkbox: string[];
+  checkboxConfig?: {
+    id: string;
+    checkboxClass?: string;
+  };
   filtersClass?: string;
+  tableData: any;
 }>();
 
 const slots = useSlots();
 
-const emit = defineEmits(["update:filters", "update:sort"]);
-
-// Filtering
-const filtersModel = computed({
-  get: () => props.filters ?? {},
-  set: (value) => emit("update:filters", value),
-});
+const emit = defineEmits(["update:sort", "update:filters", "update:checkbox"]);
 
 // Sorting
 const sortModel = computed({
@@ -82,6 +90,28 @@ function onHeaderClicked(headerId: string) {
     sortModel.value = [headerId, sortModel.value[1] === "asc" ? "desc" : "asc"];
   } else {
     sortModel.value = [headerId, "asc"];
+  }
+}
+
+// Filtering
+const filtersModel = computed({
+  get: () => props.filters ?? {},
+  set: (value) => emit("update:filters", value),
+});
+
+// checkbox
+const checkboxModel = computed({
+  get: () => props.checkbox,
+  set: (value) => emit("update:checkbox", value),
+});
+
+function updateHeaderCheckbox() {
+  if (checkboxModel.value.length >= props.tableData.length) {
+    checkboxModel.value = [];
+  } else {
+    checkboxModel.value = props.tableData.map(
+      (data: any) => data[props.checkboxConfig!.id]
+    );
   }
 }
 </script>

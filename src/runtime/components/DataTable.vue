@@ -5,8 +5,11 @@
         :id="props.id"
         v-model:sort="sortModel"
         v-model:filters="filtersModel"
+        v-model:checkbox="checkboxModel"
         :headers="props.infos.headers"
         :filters-class="props.filtersConfig?.filtersClass"
+        :checkbox-config="props.checkboxConfig"
+        :table-data="tableData"
       >
         <template
           v-for="header in props.infos.headers"
@@ -21,6 +24,15 @@
           :key="`${id}-tr-${index}`"
           class="creat-datatable-row"
         >
+          <td v-if="props.checkboxConfig">
+            <input
+              type="checkbox"
+              :class="props.checkboxConfig.checkboxClass"
+              :value="data[props.checkboxConfig.id]"
+              :checked="checkboxModel.includes(data[props.checkboxConfig.id])"
+              @click="updateCheckbox"
+            >
+          </td>
           <td
             v-for="header in props.infos.headers"
             :key="`${id}-td-${header.id}`"
@@ -56,11 +68,11 @@
   </div>
 </template>
 
-<script setup lang="ts" generic="T">
+<script setup lang="ts">
 import {
   type DTInfo,
   type SortDirection,
-  type DataTableType,
+  type DTType,
 } from "../types/datatable";
 import TablePagination from "./TablePagination.vue";
 import TableEmpty from "./TableEmpty.vue";
@@ -69,25 +81,37 @@ import { computed } from "vue";
 
 const props = defineProps<{
   id: string;
-  infos: DTInfo<T>;
+  infos: DTInfo;
   sort?: [string, SortDirection];
   filters?: { [key: string]: string };
-  type?: DataTableType;
+  currentPage?: number;
+  checkbox?: string[];
+  type?: DTType;
   filtersConfig?: {
     filtersClass?: string;
   };
-  currentPage?: number;
   paginationConfig?: {
     itemsPerPage?: number;
+  };
+  checkboxConfig?: {
+    id: string;
+    checkboxClass?: string;
   };
   tableClass?: string;
 }>();
 
 const emit = defineEmits([
+  "update:sort",
   "update:filters",
   "update:currentPage",
-  "update:sort",
+  "update:checkbox",
 ]);
+
+// Sorting
+const sortModel = computed({
+  get: () => props.sort,
+  set: (value) => emit("update:sort", value),
+});
 
 // Filtering
 const filtersModel = computed({
@@ -130,11 +154,22 @@ function changePage(page: number) {
   currentPageModel.value = page;
 }
 
-// Sorting
-const sortModel = computed({
-  get: () => props.sort,
-  set: (value) => emit("update:sort", value),
+// Checkbox
+const checkboxModel = computed({
+  get: () => props.checkbox ?? [],
+  set: (value) => emit("update:checkbox", value),
 });
+
+function updateCheckbox(event: any) {
+  if (event.target.checked) {
+    checkboxModel.value.push(event.target.value);
+  } else {
+    const index = checkboxModel.value.indexOf(event.target.value);
+    if (index !== -1) {
+      checkboxModel.value.splice(index, 1);
+    }
+  }
+}
 
 // Table data
 const tableData = computed(() => {
