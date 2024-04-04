@@ -6,6 +6,7 @@
         v-model:sort="sortModel"
         v-model:filters="filtersModel"
         :headers="props.infos.headers"
+        :filters-class="props.filtersConfig?.filtersClass"
       >
         <template
           v-for="header in props.infos.headers"
@@ -70,7 +71,7 @@ const props = defineProps<{
   filters?: { [key: string]: string };
   filtersConfig?: {
     filterType?: FilterType;
-    filterClass?: string;
+    filtersClass?: string;
   };
   currentPage?: number;
   paginationConfig?: {

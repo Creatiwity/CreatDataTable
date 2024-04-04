@@ -69,7 +69,7 @@ const filtering = ref({});
   v-model:currentPage="currentPage"
   :filters-config="{
     filterType: 'local',
-    filterClass: '',
+    filtersClass: '',
   }"
   :pagination-config="{
     paginationType: 'local',

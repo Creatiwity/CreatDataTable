@@ -31,7 +31,7 @@
           v-model="filtersModel[header.id]"
           type="search"
           class="creat-datatable-header-input"
-          :class="props.filterClass"
+          :class="props.filtersClass"
         >
       </th>
     </tr>
@@ -48,7 +48,7 @@ const props = defineProps<{
   headers: DTHeader[];
   sort?: [string, SortDirection];
   filters: { [key: string]: string };
-  filterClass?: string;
+  filtersClass?: string;
 }>();
 
 const slots = useSlots();
