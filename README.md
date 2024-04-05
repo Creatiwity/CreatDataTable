@@ -57,24 +57,10 @@ const dataTableInfos = {
   ],
   data: [{ name: "Toto" }, { name: "Tata" }],
 };
-
-const filtering = ref({});
 ```
 
 ```html
-<CreatDatable
-  id="creat-datatable"
-  :infos="dataTableInfos"
-  v-model:filters="filtering"
-  v-model:currentPage="currentPage"
-  type="remote"
-  :filters-config="{
-    filtersClass: '',
-  }"
-  :pagination-config="{
-    itemsPerPage: 3,
-  }"
->
+<CreatDatable id="creat-datatable" :infos="dataTableInfos" table-class="class">
   <template #header-name="category">
     <span>{{ category.data.name }}</span>
     <input />
@@ -85,13 +71,115 @@ const filtering = ref({});
   <template #empty-state>
     <p>No data</p>
   </template>
-  <template #pagination="{ decreasePage, increasePage }">
-    <button @click="decreasePage">Moins</button>
-    <span>Page {{ currentPage }} of </span>
-    <button @click="increasePage">Plus</button>
-  </template>
 </CreatDatable>
 ```
+
+## Style
+
+To change th and td style
+
+```ts
+const dataTableInfos = {
+  headers: [
+    {
+      id: "id",
+      label: "ID",
+      thClass: "centerth",
+    },
+  ],
+
+  content: [
+    {
+      id: "id",
+      tdClass: "class",
+    },
+  ],
+};
+```
+
+## Type
+
+```html
+<CreatDatable type="local" />
+```
+
+By default type is `local`
+
+Type `local` will directly change the dataTable data depending on the actions
+
+With the type `remote` you need to add v-model to control the data change
+
+## Sort
+
+```html
+<CreatDatable v-model:sort="sorting" />
+```
+
+```ts
+const dataTableInfos = {
+  headers: [
+    {
+      id: "firstname",
+      label: "Prénom",
+      sortable: true,
+    },
+  ],
+};
+
+const sorting = ref(["firstname", "desc"]);
+```
+
+Set the id you want to sort and the direction `desc` or `asc`
+
+## Filters
+
+```html
+<CreatDatable
+  v-model:filters="filtering"
+  :filters-config="{
+    filtersClass: 'class',
+  }"
+/>
+```
+
+```ts
+const dataTableInfos = {
+  headers: [
+    {
+      id: "firstname",
+      label: "Prénom",
+      filtering: true,
+    },
+  ],
+};
+
+const filtering = ref({});
+```
+
+On input it will return data like this `filtering = { "firstname": "j" }`
+
+## Checkbox
+
+```html
+<CreatDatable
+  v-model:checkbox="checkbox"
+  :checkbox-config="{
+    id: 'firstname',
+    overFilterMode: 'delete',
+    checkboxClass: 'checkboxTest',
+  }"
+/>
+```
+
+`overFilterMode` is to be used with the `filters` action, by default it's set to `keep` so when the checkbox of a line is selected it's doesn't deselect all the checkbox if you are typing in a filter input.
+And the mode `delete` clear all the checkbox if you are typing in a filter input
+
+```ts
+const checkbox = ref([]);
+```
+
+You need to set in the checkbox config the id that you want the data to be return in the ref array.
+On checkbox selection the array will look like [ "John", "Jak" ]
 
 <!-- Badges -->
 
