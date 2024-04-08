@@ -68,7 +68,7 @@
   </div>
 </template>
 
-<script setup lang="ts">
+<script setup lang="ts" generic="T">
 import {
   type DTInfo,
   type SortDirection,
@@ -84,7 +84,7 @@ import { computed } from "vue";
 
 const props = defineProps<{
   id: string;
-  infos: DTInfo;
+  infos: DTInfo<T>;
   sort?: [string, SortDirection];
   filters?: { [key: string]: string };
   currentPage?: number;
@@ -120,11 +120,11 @@ const filteredData = computed(() => {
     return props.infos.data;
   }
 
-  return props.infos.data.filter((item: any) =>
+  return props.infos.data.filter((data: T) =>
     props.infos.headers.every(
       (header) =>
         !filtersModel.value[header.id] ||
-        item[header.id]
+        data[header.id]
           .toString()
           .toLowerCase()
           .includes(filtersModel.value[header.id].toLowerCase())

@@ -11,14 +11,10 @@ export interface DTContent {
   tdClass?: string;
 }
 
-export interface DTInfo {
+export interface DTInfo<T> {
   headers: DTHeader[];
-  data: DTData[];
+  data: T[];
   content: DTContent[];
-}
-
-export interface DTData {
-  [key: string]: any;
 }
 
 export interface FiltersConfig {
