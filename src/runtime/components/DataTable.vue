@@ -29,7 +29,7 @@
               type="checkbox"
               :class="props.checkboxConfig.class"
               :value="data[props.checkboxConfig.id]"
-              :checked="checkboxModel.includes(data[props.checkboxConfig.id])"
+              :checked="true"
               @click="updateCheckbox"
             >
           </td>
@@ -68,14 +68,18 @@
   </div>
 </template>
 
-<script setup lang="ts" generic="T">
+<script
+  setup
+  lang="ts"
+  generic="T extends { [key: number | string]: P}, P extends { toString?(): string}"
+>
 import {
   type DTInfo,
   type SortDirection,
   type DTType,
-  CheckboxConfig,
-  PaginationConfig,
-  FiltersConfig,
+  type CheckboxConfig,
+  type PaginationConfig,
+  type FiltersConfig,
 } from "../types/datatable";
 import TablePagination from "./TablePagination.vue";
 import TableEmpty from "./TableEmpty.vue";
@@ -121,14 +125,21 @@ const filteredData = computed(() => {
   }
 
   return props.infos.data.filter((data: T) =>
-    props.infos.headers.every(
-      (header) =>
+    props.infos.headers.every((header) => {
+      const value = data[header.id];
+
+      if (value.toString == null) {
+        return false;
+      }
+
+      return (
         !filtersModel.value[header.id] ||
-        data[header.id]
+        value
           .toString()
           .toLowerCase()
           .includes(filtersModel.value[header.id].toLowerCase())
-    )
+      );
+    })
   );
 });
 
