@@ -48,7 +48,11 @@
 </template>
 
 <script setup lang="ts" generic="T">
-import { SortDirection, DTHeader, CheckboxConfig } from "../types/datatable";
+import {
+  type SortDirection,
+  type DTHeader,
+  type CheckboxConfig,
+} from "../types/datatable";
 import SortingIcon from "./SortingIcon.vue";
 import { computed, useSlots } from "vue";
 
@@ -57,10 +61,10 @@ const props = defineProps<{
   headers: DTHeader[];
   sort?: [string, SortDirection];
   filters: { [key: string]: string };
-  checkbox: string[];
+  checkbox: T[];
   checkboxConfig?: CheckboxConfig;
   filtersClass?: string;
-  tableData: any;
+  tableData: T[];
 }>();
 
 const slots = useSlots();
@@ -113,9 +117,7 @@ function updateHeaderCheckbox() {
   if (checkboxModel.value.length >= props.tableData.length) {
     checkboxModel.value = [];
   } else {
-    checkboxModel.value = props.tableData.map(
-      (data: any) => data[props.checkboxConfig!.id]
-    );
+    checkboxModel.value = props.tableData.map((data) => data);
   }
 }
 </script>

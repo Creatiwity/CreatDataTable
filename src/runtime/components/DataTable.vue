@@ -28,9 +28,8 @@
             <input
               type="checkbox"
               :class="props.checkboxConfig.class"
-              :value="data[props.checkboxConfig.id]"
-              :checked="true"
-              @click="updateCheckbox"
+              :checked="checkboxModel.includes(data)"
+              @click="updateCheckbox(data)"
             >
           </td>
           <td
@@ -92,7 +91,7 @@ const props = defineProps<{
   sort?: [string, SortDirection];
   filters?: { [key: string]: string };
   currentPage?: number;
-  checkbox?: string[];
+  checkbox?: T[];
   type?: DTType;
   filtersConfig?: FiltersConfig;
   paginationConfig?: PaginationConfig;
@@ -128,8 +127,8 @@ const filteredData = computed(() => {
     props.infos.headers.every((header) => {
       const value = data[header.id];
 
-      if (value.toString == null) {
-        return false;
+      if (value == null || value.toString == null) {
+        return true;
       }
 
       return (
@@ -167,11 +166,11 @@ const checkboxModel = computed({
   set: (value) => emit("update:checkbox", value),
 });
 
-function updateCheckbox(event: any) {
-  if (event.target.checked) {
-    checkboxModel.value.push(event.target.value);
+function updateCheckbox(data: T) {
+  if (!checkboxModel.value.includes(data)) {
+    checkboxModel.value.push(data);
   } else {
-    const index = checkboxModel.value.indexOf(event.target.value);
+    const index = checkboxModel.value.indexOf(data);
     if (index !== -1) {
       checkboxModel.value.splice(index, 1);
     }

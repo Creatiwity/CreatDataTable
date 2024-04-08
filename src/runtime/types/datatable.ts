@@ -26,7 +26,6 @@ export interface PaginationConfig {
 }
 
 export interface CheckboxConfig {
-  id: string;
   overFilterMode?: CheckboxOverFilterMode;
   class?: string;
 }
