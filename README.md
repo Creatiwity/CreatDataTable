@@ -164,7 +164,6 @@ On input it will return data like this `filtering = { "firstname": "j" }`
 <CreatDatable
   v-model:checkbox="checkbox"
   :checkbox-config="{
-    id: 'firstname',
     overFilterMode: 'delete',
     checkboxClass: 'checkboxTest',
   }"
@@ -178,8 +177,7 @@ And the mode `delete` clear all the checkbox if you are typing in a filter input
 const checkbox = ref([]);
 ```
 
-You need to set in the checkbox config the id that you want the data to be return in the ref array.
-On checkbox selection the array will look like [ "John", "Jak" ]
+On checkbox selection the array will look like [{ id: 0, firstname: "John" }, { id: 1, firstname: "Jack" }]
 
 <!-- Badges -->
 
