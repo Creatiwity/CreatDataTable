@@ -128,7 +128,7 @@ const filteredData = computed(() => {
       const value = data[header.id];
 
       if (value == null || value.toString == null) {
-        return true;
+        return false;
       }
 
       return (
