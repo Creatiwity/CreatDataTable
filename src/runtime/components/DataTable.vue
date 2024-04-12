@@ -40,7 +40,8 @@
                 ?.tdClass
             "
           >
-            <slot :name="header.id" :data="data" />
+            <slot v-if="slots[header.id]" :name="header.id" :data="data" />
+            <span v-else>{{ data[header.id] }}</span>
           </td>
         </tr>
       </tbody>
@@ -84,6 +85,7 @@ import TablePagination from "./TablePagination.vue";
 import TableEmpty from "./TableEmpty.vue";
 import TableHeader from "./TableHeader.vue";
 import { computed } from "vue";
+import { useSlots } from "vue";
 
 const props = defineProps<{
   id: string;
@@ -98,6 +100,8 @@ const props = defineProps<{
   checkboxConfig?: CheckboxConfig;
   tableClass?: string;
 }>();
+
+const slots = useSlots();
 
 const emit = defineEmits([
   "update:sort",
