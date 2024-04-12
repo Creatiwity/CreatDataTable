@@ -36,7 +36,7 @@
             v-for="header in props.infos.headers"
             :key="`${id}-td-${header.id}`"
             :class="
-              props.infos.content.find((content) => content.id === header.id)
+              props.infos.content?.find((content) => content.id === header.id)
                 ?.tdClass
             "
           >
@@ -129,19 +129,20 @@ const filteredData = computed(() => {
 
   return props.infos.data.filter((data: T) =>
     props.infos.headers.every((header) => {
+      if (!filtersModel.value[header.id]) {
+        return true;
+      }
+
       const value = data[header.id];
 
       if (value == null || value.toString == null) {
         return false;
       }
 
-      return (
-        !filtersModel.value[header.id] ||
-        value
-          .toString()
-          .toLowerCase()
-          .includes(filtersModel.value[header.id].toLowerCase())
-      );
+      return value
+        .toString()
+        .toLowerCase()
+        .includes(filtersModel.value[header.id].toLowerCase());
     })
   );
 });

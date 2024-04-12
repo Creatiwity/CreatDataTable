@@ -14,7 +14,7 @@ export interface DTContent {
 export interface DTInfo<T> {
   headers: DTHeader[];
   data: T[];
-  content: DTContent[];
+  content?: DTContent[];
 }
 
 export interface FiltersConfig {
