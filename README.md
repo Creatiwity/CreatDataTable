@@ -179,6 +179,22 @@ const checkbox = ref([]);
 
 On checkbox selection the array will look like [{ id: 0, firstname: "John" }, { id: 1, firstname: "Jack" }]
 
+## Pagination
+
+```html
+<CreatDatable
+  :pagination-config="{
+    itemsPerPage: 5,
+    currentPage: 1,
+    nbItems: 20,
+    paginationClass: 'class',
+    previousButtonClass: 'class',
+    nextButtonClass: 'class',
+  }"
+  :on-page-change="(page) => console.log('new page index = ', page)"
+/>
+```
+
 <!-- Badges -->
 
 [npm-version-src]: https://img.shields.io/npm/v/@creatiwity/datatable/latest.svg?style=flat&colorA=18181B&colorB=28CF8D
