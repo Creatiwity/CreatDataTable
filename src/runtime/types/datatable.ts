@@ -6,12 +6,32 @@ export interface DTHeader {
   thClass?: string;
 }
 
+export interface DTContent {
+  id: string;
+  tdClass?: string;
+}
+
 export interface DTInfo<T> {
   headers: DTHeader[];
   data: T[];
+  content: DTContent[];
+}
+
+export interface FiltersConfig {
+  class?: string;
+}
+
+export interface PaginationConfig {
+  itemsPerPage?: number;
+}
+
+export interface CheckboxConfig {
+  overFilterMode?: CheckboxOverFilterMode;
+  class?: string;
 }
 
 export type SortDirection = "asc" | "desc";
 
-export type FilterType = "remote" | "local";
-export type PaginationType = "remote" | "local";
+export type DTType = "remote" | "local";
+
+export type CheckboxOverFilterMode = "delete" | "keep";

@@ -34,7 +34,7 @@
 </template>
 
 <script setup lang="ts">
-import { SortDirection } from "../types/datatable";
+import { type SortDirection } from "../types/datatable";
 
 const props = defineProps<{
   direction: SortDirection | null;

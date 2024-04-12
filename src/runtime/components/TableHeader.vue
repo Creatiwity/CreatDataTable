@@ -1,6 +1,14 @@
 <template>
   <thead>
     <tr>
+      <th v-if="props.checkboxConfig">
+        <input
+          type="checkbox"
+          :class="props.checkboxConfig.class"
+          :checked="checkboxModel.length >= props.tableData.length"
+          @click="updateHeaderCheckbox"
+        >
+      </th>
       <th
         v-for="header in props.headers"
         :key="`${props.id}-DT-header-${header.id}`"
@@ -31,7 +39,8 @@
           v-model="filtersModel[header.id]"
           type="search"
           class="creat-datatable-header-input"
-          :class="props.filterClass"
+          :class="props.filtersClass"
+          @input="onInput"
         >
       </th>
     </tr>
@@ -39,7 +48,11 @@
 </template>
 
 <script setup lang="ts" generic="T">
-import { SortDirection, DTHeader } from "../types/datatable";
+import {
+  type SortDirection,
+  type DTHeader,
+  type CheckboxConfig,
+} from "../types/datatable";
 import SortingIcon from "./SortingIcon.vue";
 import { computed, useSlots } from "vue";
 
@@ -48,18 +61,15 @@ const props = defineProps<{
   headers: DTHeader[];
   sort?: [string, SortDirection];
   filters: { [key: string]: string };
-  filterClass?: string;
+  checkbox: T[];
+  checkboxConfig?: CheckboxConfig;
+  filtersClass?: string;
+  tableData: T[];
 }>();
 
 const slots = useSlots();
 
-const emit = defineEmits(["update:filters", "update:sort"]);
-
-// Filtering
-const filtersModel = computed({
-  get: () => props.filters ?? {},
-  set: (value) => emit("update:filters", value),
-});
+const emit = defineEmits(["update:sort", "update:filters", "update:checkbox"]);
 
 // Sorting
 const sortModel = computed({
@@ -82,6 +92,32 @@ function onHeaderClicked(headerId: string) {
     sortModel.value = [headerId, sortModel.value[1] === "asc" ? "desc" : "asc"];
   } else {
     sortModel.value = [headerId, "asc"];
+  }
+}
+
+// Filtering
+const filtersModel = computed({
+  get: () => props.filters ?? {},
+  set: (value) => emit("update:filters", value),
+});
+
+function onInput() {
+  if (props.checkboxConfig?.overFilterMode === "delete") {
+    checkboxModel.value = [];
+  }
+}
+
+// Checkbox
+const checkboxModel = computed({
+  get: () => props.checkbox,
+  set: (value) => emit("update:checkbox", value),
+});
+
+function updateHeaderCheckbox() {
+  if (checkboxModel.value.length >= props.tableData.length) {
+    checkboxModel.value = [];
+  } else {
+    checkboxModel.value = props.tableData.map((data) => data);
   }
 }
 </script>
