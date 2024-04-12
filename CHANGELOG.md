@@ -1,5 +1,17 @@
 # Changelog
 
+## v1.0.16
+
+[compare changes](https://github.com/Creatiwity/CreatDataTable/compare/v1.0.14...v1.0.16)
+
+### 🏡 Chore
+
+- **release:** V1.0.15 ([20d6174](https://github.com/Creatiwity/CreatDataTable/commit/20d6174))
+
+### ❤️ Contributors
+
+- Fledarath <frederic.ledarath@epitech.eu>
+
 ## v1.0.15
 
 [compare changes](https://github.com/Creatiwity/CreatDataTable/compare/v1.0.14...v1.0.15)
