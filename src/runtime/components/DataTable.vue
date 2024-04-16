@@ -1,5 +1,5 @@
 <template>
-  <div class="creat-datatable table-responsive">
+  <div>
     <table class="table" :class="tableClass">
       <TableHeader
         :id="props.id"
@@ -200,16 +200,4 @@ const tableData = computed(() => {
 </script>
 
 <style scoped>
-.creat-datatable table {
-  border-collapse: collapse;
-  width: 100%;
-}
-
-.creat-datatable .creat-datatable-row:nth-child(even) {
-  background-color: #ebe8e8;
-}
-
-.creat-datatable .creat-datatable-row:hover {
-  background-color: #dbd1d1;
-}
 </style>
