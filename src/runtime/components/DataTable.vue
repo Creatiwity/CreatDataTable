@@ -71,7 +71,7 @@
 <script
   setup
   lang="ts"
-  generic="T extends { [key: number | string]: P}, P extends { toString?(): string}"
+  generic="T extends { [key: number | string]: P}, P"
 >
 import {
   type DTInfo,
