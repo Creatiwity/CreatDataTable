@@ -61,11 +61,7 @@
   </div>
 </template>
 
-<script
-  setup
-  lang="ts"
-  generic="T extends { [key: number | string]: P}, P"
->
+<script setup lang="ts" generic="T extends { [key: number | string]: P}, P">
 import {
   type DTInfo,
   type SortDirection,
@@ -77,7 +73,9 @@ import {
 import TablePagination from "./TablePagination.vue";
 import TableEmpty from "./TableEmpty.vue";
 import TableHeader from "./TableHeader.vue";
-import { computed, ref, watch } from "vue";
+import { computed, ref, watch, useSlots } from "vue";
+
+const slots = useSlots();
 
 const props = defineProps<{
   id: string;
@@ -201,7 +199,7 @@ const tableData = computed(() => {
 
   data = filteredData.value;
 
-  if (props.type !== "remote") {
+  if (props.type !== "remote" && props.paginationConfig) {
     const start = (paginationCurrentPage.value - 1) * ITEMS_PER_PAGE;
     const end = start + ITEMS_PER_PAGE;
 
@@ -212,5 +210,4 @@ const tableData = computed(() => {
 });
 </script>
 
-<style scoped>
-</style>
+<style scoped></style>
