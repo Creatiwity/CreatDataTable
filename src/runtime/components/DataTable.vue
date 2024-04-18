@@ -53,26 +53,15 @@
     </table>
     <TablePagination
       v-if="props.paginationConfig"
-      :current-page="currentPageModel"
-      :max-page="maxPage"
+      :current-page="paginationCurrentPage"
+      :max-page="paginationMaxPage"
+      :pagination-config="props.paginationConfig"
       @change-page="changePage"
-    >
-      <template #pagination="{ decreasePage, increasePage }">
-        <slot
-          name="pagination"
-          :decrease-page="decreasePage"
-          :increase-page="increasePage"
-        />
-      </template>
-    </TablePagination>
+    />
   </div>
 </template>
 
-<script
-  setup
-  lang="ts"
-  generic="T extends { [key: number | string]: P}, P"
->
+<script setup lang="ts" generic="T extends { [key: number | string]: P}, P">
 import {
   type DTInfo,
   type SortDirection,
@@ -84,8 +73,9 @@ import {
 import TablePagination from "./TablePagination.vue";
 import TableEmpty from "./TableEmpty.vue";
 import TableHeader from "./TableHeader.vue";
-import { computed } from "vue";
-import { useSlots } from "vue";
+import { computed, ref, watch, useSlots } from "vue";
+
+const slots = useSlots();
 
 const props = defineProps<{
   id: string;
@@ -97,18 +87,12 @@ const props = defineProps<{
   type?: DTType;
   filtersConfig?: FiltersConfig;
   paginationConfig?: PaginationConfig;
+  onPageChange?: (page: number) => void;
   checkboxConfig?: CheckboxConfig;
   tableClass?: string;
 }>();
 
-const slots = useSlots();
-
-const emit = defineEmits([
-  "update:sort",
-  "update:filters",
-  "update:currentPage",
-  "update:checkbox",
-]);
+const emit = defineEmits(["update:sort", "update:filters", "update:checkbox"]);
 
 // Sorting
 const sortModel = computed({
@@ -150,19 +134,46 @@ const filteredData = computed(() => {
 // Pagination
 const ITEMS_PER_PAGE = props.paginationConfig?.itemsPerPage ?? 5;
 
+const paginationCurrentPage = ref(1);
+
+watch(
+  () => props.paginationConfig?.currentPage,
+  (newCurrentPage) => {
+    if (newCurrentPage) {
+      paginationCurrentPage.value = newCurrentPage;
+    }
+  }
+);
+
 const maxPage = computed(() => {
-  return Math.ceil(filteredData.value.length / ITEMS_PER_PAGE);
+  if (props.paginationConfig?.nbItems) {
+    return Math.ceil(props.paginationConfig.nbItems / ITEMS_PER_PAGE);
+  } else {
+    return Math.ceil(filteredData.value.length / ITEMS_PER_PAGE);
+  }
 });
 
-const currentPageModel = computed({
-  get: () => props.currentPage ?? 1,
-  set: (value) => {
-    emit("update:currentPage", value);
-  },
+const paginationMaxPage = ref(maxPage);
+
+watch(
+  () => props.paginationConfig?.nbItems,
+  (newNbItems) => {
+    if (newNbItems) {
+      paginationMaxPage.value = Math.ceil(newNbItems / ITEMS_PER_PAGE);
+    }
+  }
+);
+
+watch(filteredData, () => {
+  paginationMaxPage.value = maxPage.value;
 });
 
 function changePage(page: number) {
-  currentPageModel.value = page;
+  if (props.type === "remote") {
+    props.onPageChange?.(page);
+  } else {
+    paginationCurrentPage.value = page;
+  }
 }
 
 // Checkbox
@@ -188,8 +199,8 @@ const tableData = computed(() => {
 
   data = filteredData.value;
 
-  if (props.type !== "remote") {
-    const start = (currentPageModel.value - 1) * ITEMS_PER_PAGE;
+  if (props.type !== "remote" && props.paginationConfig) {
+    const start = (paginationCurrentPage.value - 1) * ITEMS_PER_PAGE;
     const end = start + ITEMS_PER_PAGE;
 
     data = data.slice(start, end);
@@ -199,5 +210,4 @@ const tableData = computed(() => {
 });
 </script>
 
-<style scoped>
-</style>
+<style scoped></style>

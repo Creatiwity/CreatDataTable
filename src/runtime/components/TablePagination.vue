@@ -1,13 +1,8 @@
 <template>
-  <slot
-    v-if="slots['pagination']"
-    name="pagination"
-    :decrease-page="() => changePage(props.currentPage - 1)"
-    :increase-page="() => changePage(props.currentPage + 1)"
-  />
-  <div v-else>
+  <div :class="$props.paginationConfig?.paginationClass">
     <button
       :disabled="currentPage <= 1"
+      :class="$props.paginationConfig?.previousButtonClass"
       @click="changePage(props.currentPage - 1)"
     >
       Previous
@@ -15,6 +10,7 @@
     <span>Page {{ props.currentPage }} of {{ props.maxPage }}</span>
     <button
       :disabled="currentPage >= props.maxPage"
+      :class="$props.paginationConfig?.nextButtonClass"
       @click="changePage(props.currentPage + 1)"
     >
       Next
@@ -23,14 +19,13 @@
 </template>
 
 <script setup lang="ts" generic="T">
-import { useSlots } from "vue";
+import type { PaginationConfig } from "../types/datatable";
 
 const props = defineProps<{
   currentPage: number;
   maxPage: number;
+  paginationConfig?: PaginationConfig;
 }>();
-
-const slots = useSlots();
 
 const emit = defineEmits(["change-page"]);
 

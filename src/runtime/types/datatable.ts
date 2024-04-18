@@ -23,6 +23,11 @@ export interface FiltersConfig {
 
 export interface PaginationConfig {
   itemsPerPage?: number;
+  currentPage?: number;
+  nbItems?: number;
+  paginationClass: string;
+  previousButtonClass: string;
+  nextButtonClass: string;
 }
 
 export interface CheckboxConfig {

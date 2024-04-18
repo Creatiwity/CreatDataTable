@@ -5,7 +5,10 @@
         <input
           type="checkbox"
           :class="props.checkboxConfig.class"
-          :checked="checkboxModel.length >= props.tableData.length"
+          :checked="
+            props.tableData.length >= 1 &&
+              checkboxModel.length >= props.tableData.length
+          "
           @click="updateHeaderCheckbox"
         >
       </th>
