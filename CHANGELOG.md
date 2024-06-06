@@ -1,5 +1,21 @@
 # Changelog
 
+## v1.0.22
+
+[compare changes](https://github.com/Creatiwity/CreatDataTable/compare/v1.0.20...v1.0.22)
+
+### 🩹 Fixes
+
+- **pagination:** Handle when no config provided ([6de7e1e](https://github.com/Creatiwity/CreatDataTable/commit/6de7e1e))
+
+### 🏡 Chore
+
+- **release:** V1.0.21 ([3914da3](https://github.com/Creatiwity/CreatDataTable/commit/3914da3))
+
+### ❤️ Contributors
+
+- Fledarath <frederic.ledarath@epitech.eu>
+
 ## v1.0.21
 
 [compare changes](https://github.com/Creatiwity/CreatDataTable/compare/v1.0.20...v1.0.21)
