@@ -137,7 +137,7 @@ Set the id you want to sort and the direction `desc` or `asc`
 <CreatDatable
   v-model:filters="filtering"
   :filters-config="{
-    filtersClass: 'class',
+    class: 'class',
   }"
 />
 ```
@@ -165,7 +165,7 @@ On input it will return data like this `filtering = { "firstname": "j" }`
   v-model:checkbox="checkbox"
   :checkbox-config="{
     overFilterMode: 'delete',
-    checkboxClass: 'checkboxTest',
+    class: 'checkboxTest',
   }"
 />
 ```
