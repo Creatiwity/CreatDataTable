@@ -32,7 +32,8 @@ export interface PaginationConfig {
 
 export interface CheckboxConfig {
   overFilterMode?: CheckboxOverFilterMode;
-  class?: string;
+  tdClass?: string;
+  inputClass?: string;
 }
 
 export type SortDirection = "asc" | "desc";

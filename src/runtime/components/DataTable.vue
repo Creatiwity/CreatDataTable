@@ -24,10 +24,10 @@
           :key="`${id}-tr-${index}`"
           class="creat-datatable-row"
         >
-          <td v-if="props.checkboxConfig">
+          <td v-if="props.checkboxConfig" :class="props.checkboxConfig.tdClass">
             <input
               type="checkbox"
-              :class="props.checkboxConfig.class"
+              :class="props.checkboxConfig.inputClass"
               :checked="checkboxModel.includes(data)"
               @click="updateCheckbox(data)"
             >
