@@ -195,9 +195,7 @@ function updateCheckbox(data: T) {
 
 // Table data
 const tableData = computed(() => {
-  let data = props.infos.data;
-
-  data = filteredData.value;
+  let data = filteredData.value;
 
   if (props.type !== "remote" && props.paginationConfig) {
     const start = (paginationCurrentPage.value - 1) * ITEMS_PER_PAGE;
