@@ -40,11 +40,7 @@
                 ?.tdClass
             "
           >
-            <slot
-              v-if="slots[`header-${header.id}`]"
-              :name="`header-${header.id}`"
-              :data="data"
-            />
+            <slot v-if="slots[header.id]" :name="header.id" :data="data" />
             <span v-else>{{ data[header.id] }}</span>
           </td>
         </tr>
