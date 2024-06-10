@@ -165,8 +165,7 @@ On input it will return data like this `filtering = { "firstname": "j" }`
   v-model:checkbox="checkbox"
   :checkbox-config="{
     overFilterMode: 'delete',
-    tdClass: 'checkboxClass',
-    inputClass: 'checkboxClass',
+    class: 'checkboxTest',
   }"
 />
 ```
