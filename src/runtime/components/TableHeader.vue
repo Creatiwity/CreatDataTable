@@ -87,7 +87,7 @@ const sortDirection = computed(() =>
 
 function onHeaderClicked(headerId: string) {
   const header = props.headers.find((header) => header.id === headerId);
-  if (!header || !(header.sortable ?? true)) {
+  if (!header || !header.sortable) {
     return;
   }
 
