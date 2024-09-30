@@ -53,6 +53,7 @@ const dataTableInfos = {
     {
       id: "name",
       label: "Nom",
+      sortable: false, // default: true
     },
   ],
   data: [{ name: "Toto" }, { name: "Tata" }],

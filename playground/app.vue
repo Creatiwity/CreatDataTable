@@ -36,6 +36,7 @@ const dataTableInfos = {
     {
       id: "lastname",
       label: "Nom",
+      sortable: false,
     },
   ],
   data: [

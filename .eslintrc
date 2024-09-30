@@ -3,7 +3,8 @@
   "extends": ["@nuxt/eslint-config"],
   "rules": {
     "vue/max-attributes-per-line": "off",
-    "vue/singleline-html-element-content-newline": "off"
+    "vue/singleline-html-element-content-newline": "off",
+    "vue/html-self-closing": "off"
   },
   "ignorePatterns": ["node_modules", "dist/*"]
 }

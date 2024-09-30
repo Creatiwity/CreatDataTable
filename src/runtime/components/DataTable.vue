@@ -30,7 +30,7 @@
               :class="props.checkboxConfig.class"
               :checked="checkboxModel.includes(data)"
               @click="updateCheckbox(data)"
-            >
+            />
           </td>
           <td
             v-for="header in props.infos.headers"
@@ -153,7 +153,7 @@ const maxPage = computed(() => {
   }
 });
 
-const paginationMaxPage = ref(maxPage);
+const paginationMaxPage = ref<number>(maxPage.value);
 
 watch(
   () => props.paginationConfig?.nbItems,
