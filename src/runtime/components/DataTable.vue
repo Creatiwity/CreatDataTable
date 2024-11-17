@@ -111,8 +111,8 @@ const filteredData = computed(() => {
     return props.infos.data;
   }
 
-  return props.infos.data.filter((data: T) =>
-    props.infos.headers.every((header) => {
+  return props.infos.data.filter((data: T) => {
+    return props.infos.headers.every((header) => {
       if (!filtersModel.value[header.id]) {
         return true;
       }
@@ -123,12 +123,11 @@ const filteredData = computed(() => {
         return false;
       }
 
-      return value
-        .toString()
-        .toLowerCase()
-        .includes(filtersModel.value[header.id].toLowerCase());
-    })
-  );
+      return normalizeString(value.toString()).includes(
+        normalizeString(filtersModel.value[header.id])
+      );
+    });
+  });
 });
 
 // Pagination
@@ -206,6 +205,13 @@ const tableData = computed(() => {
 
   return data;
 });
+
+function normalizeString(string: string) {
+  return string
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase();
+}
 </script>
 
 <style scoped></style>
