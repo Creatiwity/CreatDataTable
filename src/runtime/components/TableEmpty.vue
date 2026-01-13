@@ -9,7 +9,7 @@
   </tbody>
 </template>
 
-<script setup lang="ts" generic="T">
+<script setup lang="ts">
 import { useSlots } from "vue";
 
 const props = defineProps<{

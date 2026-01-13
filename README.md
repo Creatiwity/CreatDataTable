@@ -75,6 +75,53 @@ const dataTableInfos = {
 </CreatDatable>
 ```
 
+## Slots
+
+### Sorting Icon Slot
+
+You can customize the sorting icon using the `#sorting-icon` slot:
+
+```html
+<CreatDatable id="creat-datatable" :infos="dataTableInfos">
+  <template #sorting-icon="{ direction, headerId }">
+    <span v-if="direction === 'asc'">↑</span>
+    <span v-else-if="direction === 'desc'">↓</span>
+    <span v-else>○</span>
+  </template>
+</CreatDatable>
+```
+
+### Checkbox Slots
+
+You can customize the checkboxes in the header and cells using the `#checkbox-header` and `#checkbox-cell` slots:
+
+```html
+<CreatDatable id="creat-datatable" :infos="dataTableInfos" :checkbox-config="{}">
+  <template #checkbox-header="{ checked, toggleCheckbox }">
+    <input type="checkbox" :checked="checked" @click="toggleCheckbox" />
+  </template>
+  <template #checkbox-cell="{ row, checked, toggleCheckbox }">
+    <input type="checkbox" :checked="checked" @click="toggleCheckbox" />
+  </template>
+</CreatDatable>
+```
+
+### Pagination Slot
+
+You can customize the pagination using the `#pagination` slot:
+
+```html
+<CreatDatable id="creat-datatable" :infos="dataTableInfos" :pagination-config="{ itemsPerPage: 5 }">
+  <template #pagination="{ currentPage, maxPage, changePage }">
+    <div>
+      <button @click="changePage(currentPage - 1)" :disabled="currentPage <= 1">Previous</button>
+      <span>Page {{ currentPage }} of {{ maxPage }}</span>
+      <button @click="changePage(currentPage + 1)" :disabled="currentPage >= maxPage">Next</button>
+    </div>
+  </template>
+</CreatDatable>
+```
+
 ## Style
 
 To change th and td style
