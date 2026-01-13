@@ -21,6 +21,9 @@
         >
           <slot :name="headerSlotName(header.id)" v-bind="slotProps" />
         </template>
+        <template v-if="slots['sorting-icon']" #sorting-icon="slotProps">
+          <slot name="sorting-icon" v-bind="slotProps" />
+        </template>
       </TableHeader>
       <tbody v-if="tableData.length > 0">
         <tr
