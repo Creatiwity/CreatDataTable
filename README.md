@@ -61,7 +61,7 @@ const dataTableInfos = {
 ```
 
 ```html
-<CreatDatable id="creat-datatable" :infos="dataTableInfos" table-class="class">
+<CreatDataTable id="creat-datatable" :infos="dataTableInfos" table-class="class">
   <template #header-name="category">
     <span>{{ category.data.name }}</span>
     <input />
@@ -72,7 +72,7 @@ const dataTableInfos = {
   <template #empty-state>
     <p>No data</p>
   </template>
-</CreatDatable>
+</CreatDataTable>
 ```
 
 ## Slots
@@ -82,13 +82,13 @@ const dataTableInfos = {
 You can customize the sorting icon using the `#sorting-icon` slot:
 
 ```html
-<CreatDatable id="creat-datatable" :infos="dataTableInfos">
+<CreatDataTable id="creat-datatable" :infos="dataTableInfos">
   <template #sorting-icon="{ direction, headerId }">
     <span v-if="direction === 'asc'">↑</span>
     <span v-else-if="direction === 'desc'">↓</span>
     <span v-else>○</span>
   </template>
-</CreatDatable>
+</CreatDataTable>
 ```
 
 ### Checkbox Slots
@@ -96,14 +96,14 @@ You can customize the sorting icon using the `#sorting-icon` slot:
 You can customize the checkboxes in the header and cells using the `#checkbox-header` and `#checkbox-cell` slots:
 
 ```html
-<CreatDatable id="creat-datatable" :infos="dataTableInfos" :checkbox-config="{}">
+<CreatDataTable id="creat-datatable" :infos="dataTableInfos" :checkbox-config="{}">
   <template #checkbox-header="{ checked, toggleCheckbox }">
     <input type="checkbox" :checked="checked" @click="toggleCheckbox" />
   </template>
   <template #checkbox-cell="{ row, checked, toggleCheckbox }">
     <input type="checkbox" :checked="checked" @click="toggleCheckbox" />
   </template>
-</CreatDatable>
+</CreatDataTable>
 ```
 
 ### Pagination Slot
@@ -111,7 +111,7 @@ You can customize the checkboxes in the header and cells using the `#checkbox-he
 You can customize the pagination using the `#pagination` slot:
 
 ```html
-<CreatDatable id="creat-datatable" :infos="dataTableInfos" :pagination-config="{ itemsPerPage: 5 }">
+<CreatDataTable id="creat-datatable" :infos="dataTableInfos" :pagination-config="{ itemsPerPage: 5 }">
   <template #pagination="{ currentPage, maxPage, changePage }">
     <div>
       <button @click="changePage(currentPage - 1)" :disabled="currentPage <= 1">Previous</button>
@@ -119,7 +119,7 @@ You can customize the pagination using the `#pagination` slot:
       <button @click="changePage(currentPage + 1)" :disabled="currentPage >= maxPage">Next</button>
     </div>
   </template>
-</CreatDatable>
+</CreatDataTable>
 ```
 
 ## Style
@@ -148,7 +148,7 @@ const dataTableInfos = {
 ## Type
 
 ```html
-<CreatDatable type="local" />
+<CreatDataTable type="local" />
 ```
 
 By default type is `local`
@@ -160,7 +160,7 @@ With the type `remote` you need to add v-model to control the data change
 ## Sort
 
 ```html
-<CreatDatable v-model:sort="sorting" />
+<CreatDataTable v-model:sort="sorting" />
 ```
 
 ```ts
@@ -182,7 +182,7 @@ Set the id you want to sort and the direction `desc` or `asc`
 ## Filters
 
 ```html
-<CreatDatable
+<CreatDataTable
   v-model:filters="filtering"
   :filters-config="{
     class: 'class',
@@ -209,7 +209,7 @@ On input it will return data like this `filtering = { "firstname": "j" }`
 ## Checkbox
 
 ```html
-<CreatDatable
+<CreatDataTable
   v-model:checkbox="checkbox"
   :checkbox-config="{
     overFilterMode: 'delete',
@@ -230,7 +230,7 @@ On checkbox selection the array will look like [{ id: 0, firstname: "John" }, { 
 ## Pagination
 
 ```html
-<CreatDatable
+<CreatDataTable
   :pagination-config="{
     itemsPerPage: 5,
     currentPage: 1,
