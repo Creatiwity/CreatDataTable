@@ -2,60 +2,63 @@
   <div>
     <table class="table" :class="tableClass">
       <TableHeader
-        :id="props.id"
-        v-model:sort="sortModel"
-        v-model:filters="filtersModel"
-        v-model:checkbox="checkboxModel"
-        :headers="props.infos.headers"
-        :filters-class="props.filtersConfig?.class"
-        :checkbox-config="props.checkboxConfig"
+        :id="id"
+        :headers="headers"
+        :filters-class="filtersConfig?.class"
+        :checkbox-config="checkboxConfig"
         :table-data="tableData"
+        :sort="sortValue"
+        :filters="filtersValue"
+        :checkbox="checkboxValue"
+        @update:sort="setSort"
+        @update:filters="setFilters"
+        @update:checkbox="setCheckbox"
       >
         <template
-          v-for="header in props.infos.headers"
+          v-for="header in headersWithHeaderSlot"
           :key="`${id}-header-${header.id}`"
+          #[headerSlotName(header.id)]="slotProps"
         >
-          <slot :name="`header-${header.id}`" :data="header" />
+          <slot :name="headerSlotName(header.id)" v-bind="slotProps" />
         </template>
       </TableHeader>
-      <tbody v-if="tableData && tableData.length > 0">
+      <tbody v-if="tableData.length > 0">
         <tr
           v-for="(data, index) in tableData"
           :key="`${id}-tr-${index}`"
           class="creat-datatable-row"
         >
-          <td v-if="props.checkboxConfig">
-            <input
-              type="checkbox"
-              :class="props.checkboxConfig.class"
-              :checked="checkboxModel.includes(data)"
-              @click="updateCheckbox(data)"
-            />
+          <td v-if="checkboxConfig">
+            <slot name="checkbox-cell" :row="data" :checked="checkboxValue.includes(data)" :toggle-checkbox="() => toggleCheckbox(data)">
+              <input
+                type="checkbox"
+                :class="checkboxConfig.class"
+                :checked="checkboxValue.includes(data)"
+                @click="toggleCheckbox(data)"
+              />
+            </slot>
           </td>
           <td
-            v-for="header in props.infos.headers"
+            v-for="header in headers"
             :key="`${id}-td-${header.id}`"
-            :class="
-              props.infos.content?.find((content) => content.id === header.id)
-                ?.tdClass
-            "
+            :class="contentClassMap.get(header.id)"
           >
             <slot v-if="slots[header.id]" :name="header.id" :data="data" />
             <span v-else>{{ data[header.id] }}</span>
           </td>
         </tr>
       </tbody>
-      <TableEmpty v-else :headers-nb="props.infos.headers.length">
+      <TableEmpty v-else :headers-nb="headers.length">
         <template #empty-state>
           <slot name="empty-state" />
         </template>
       </TableEmpty>
     </table>
     <TablePagination
-      v-if="props.paginationConfig"
+      v-if="paginationConfig"
       :current-page="paginationCurrentPage"
-      :max-page="paginationMaxPage"
-      :pagination-config="props.paginationConfig"
+      :max-page="maxPage"
+      :pagination-config="paginationConfig"
       @change-page="changePage"
     />
   </div>
@@ -73,7 +76,9 @@ import {
 import TablePagination from "./TablePagination.vue";
 import TableEmpty from "./TableEmpty.vue";
 import TableHeader from "./TableHeader.vue";
-import { computed, ref, watch, useSlots } from "vue";
+import { computed, ref, watch, useSlots, toRef, toRefs } from "vue";
+import { useTableState } from "../composables/useTableState";
+import { useTableFiltering } from "../composables/useTableFiltering";
 
 const slots = useSlots();
 
@@ -88,55 +93,66 @@ const props = defineProps<{
   filtersConfig?: FiltersConfig;
   paginationConfig?: PaginationConfig;
   onPageChange?: (page: number) => void;
-  checkboxConfig?: CheckboxConfig;
+  checkboxConfig?: CheckboxConfig<T>;
   tableClass?: string;
 }>();
 
-const emit = defineEmits(["update:sort", "update:filters", "update:checkbox"]);
+const emit = defineEmits<{
+  "update:sort": [[string, SortDirection] | undefined];
+  "update:filters": [{ [key: string]: string }];
+  "update:checkbox": [T[]];
+}>();
 
-// Sorting
-const sortModel = computed({
-  get: () => props.sort,
-  set: (value) => emit("update:sort", value),
+const { id, infos, type, filtersConfig, paginationConfig, checkboxConfig } =
+  toRefs(props);
+
+const headers = computed(() => infos.value.headers);
+const rows = computed(() => infos.value.data ?? []);
+const content = computed(() => infos.value.content ?? []);
+const isRemote = computed(() => type.value === "remote");
+
+const headersWithHeaderSlot = computed(() => {
+  const slotNames = new Set(Object.keys(slots));
+  return headers.value.filter((header) =>
+    slotNames.has(`header-${header.id}`)
+  );
 });
 
-// Filtering
-const filtersModel = computed({
-  get: () => props.filters ?? {},
-  set: (value) => emit("update:filters", value),
-});
-
-const filteredData = computed(() => {
-  if (props.type === "remote") {
-    return props.infos.data;
-  }
-
-  return props.infos.data.filter((data: T) => {
-    return props.infos.headers.every((header) => {
-      if (!filtersModel.value[header.id]) {
-        return true;
-      }
-
-      const value = data[header.id];
-
-      if (value == null || value.toString == null) {
-        return false;
-      }
-
-      return normalizeString(value.toString()).includes(
-        normalizeString(filtersModel.value[header.id])
-      );
-    });
+const { sortValue, filtersValue, checkboxValue, setSort, setFilters, setCheckbox } =
+  useTableState({
+    sort: toRef(props, 'sort'),
+    filters: toRef(props, 'filters'),
+    checkbox: toRef(props, 'checkbox'),
+    onSortUpdate: (v) => emit("update:sort", v),
+    onFiltersUpdate: (v) => emit("update:filters", v),
+    onCheckboxUpdate: (v) => emit("update:checkbox", v),
   });
+
+const { filteredData } = useTableFiltering(
+  () => rows.value,
+  () => headers.value,
+  () => filtersValue.value,
+  type.value
+);
+
+const contentClassMap = computed(() => {
+  const map = new Map<string, string | undefined>();
+  content.value.forEach((c) => {
+    if (c.tdClass) {
+      map.set(c.id, c.tdClass);
+    }
+  });
+  return map;
 });
 
 // Pagination
-const ITEMS_PER_PAGE = props.paginationConfig?.itemsPerPage ?? 5;
+const INITIAL_PAGE = 1;
+const itemsPerPage = computed(() => paginationConfig.value?.itemsPerPage ?? 5);
 
-const paginationCurrentPage = ref(1);
+const paginationCurrentPage = ref(INITIAL_PAGE);
 
 watch(
-  () => props.paginationConfig?.currentPage,
+  () => paginationConfig.value?.currentPage,
   (newCurrentPage) => {
     if (newCurrentPage) {
       paginationCurrentPage.value = newCurrentPage;
@@ -145,73 +161,52 @@ watch(
 );
 
 const maxPage = computed(() => {
-  if (props.paginationConfig?.nbItems) {
-    return Math.ceil(props.paginationConfig.nbItems / ITEMS_PER_PAGE);
-  } else {
-    return Math.ceil(filteredData.value.length / ITEMS_PER_PAGE);
-  }
+  const total = paginationConfig.value?.nbItems ?? filteredData.value.length;
+  return Math.ceil(total / itemsPerPage.value) || 1;
 });
 
-const paginationMaxPage = ref<number>(maxPage.value);
-
-watch(
-  () => props.paginationConfig?.nbItems,
-  (newNbItems) => {
-    if (newNbItems) {
-      paginationMaxPage.value = Math.ceil(newNbItems / ITEMS_PER_PAGE);
-    }
+watch([filteredData, () => paginationConfig.value?.nbItems], () => {
+  if (paginationCurrentPage.value > maxPage.value) {
+    paginationCurrentPage.value = INITIAL_PAGE;
   }
-);
-
-watch(filteredData, () => {
-  paginationMaxPage.value = maxPage.value;
 });
 
 function changePage(page: number) {
-  if (props.type === "remote") {
+  if (isRemote.value) {
     props.onPageChange?.(page);
   } else {
     paginationCurrentPage.value = page;
   }
 }
 
-// Checkbox
-const checkboxModel = computed({
-  get: () => props.checkbox ?? [],
-  set: (value) => emit("update:checkbox", value),
-});
+function toggleCheckbox(row: T) {
+  const idKey = checkboxConfig.value?.idKey as keyof T | undefined;
+  const isSelected = idKey
+    ? checkboxValue.value.some((r) => r[idKey] === row[idKey])
+    : checkboxValue.value.includes(row);
 
-function updateCheckbox(data: T) {
-  if (!checkboxModel.value.includes(data)) {
-    checkboxModel.value.push(data);
+  if (!isSelected) {
+    setCheckbox([...checkboxValue.value, row]);
   } else {
-    const index = checkboxModel.value.indexOf(data);
-    if (index !== -1) {
-      checkboxModel.value.splice(index, 1);
-    }
+    setCheckbox(
+      idKey
+        ? checkboxValue.value.filter((r) => r[idKey] !== row[idKey])
+        : checkboxValue.value.filter((r) => r !== row)
+    );
   }
 }
 
-// Table data
 const tableData = computed(() => {
-  let data = filteredData.value;
+  let pageRows = filteredData.value;
 
-  if (props.type !== "remote" && props.paginationConfig) {
-    const start = (paginationCurrentPage.value - 1) * ITEMS_PER_PAGE;
-    const end = start + ITEMS_PER_PAGE;
-
-    data = data.slice(start, end);
+  if (!isRemote.value && paginationConfig.value) {
+    const start = (paginationCurrentPage.value - 1) * itemsPerPage.value;
+    pageRows = pageRows.slice(start, start + itemsPerPage.value);
   }
 
-  return data;
+  return pageRows;
 });
 
-function normalizeString(string: string) {
-  return string
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .toLowerCase();
-}
+const headerSlotName = (headerId: string) => `header-${headerId}`;
 </script>
 
-<style scoped></style>

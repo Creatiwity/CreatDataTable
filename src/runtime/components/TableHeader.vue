@@ -2,15 +2,14 @@
   <thead>
     <tr>
       <th v-if="props.checkboxConfig">
-        <input
-          type="checkbox"
-          :class="props.checkboxConfig.class"
-          :checked="
-            props.tableData.length >= 1 &&
-              checkboxModel.length >= props.tableData.length
-          "
-          @click="updateHeaderCheckbox"
-        >
+        <slot name="checkbox-header" :checked="headerCheckboxChecked" :toggle-checkbox="updateHeaderCheckbox">
+          <input
+            type="checkbox"
+            :class="props.checkboxConfig.class"
+            :checked="headerCheckboxChecked"
+            @click="updateHeaderCheckbox"
+          >
+        </slot>
       </th>
       <th
         v-for="header in props.headers"
@@ -23,6 +22,10 @@
           v-if="slots[`header-${header.id}`]"
           :name="`header-${header.id}`"
           :data="header"
+          :sort-id="sortId"
+          :sort-direction="sortDirection"
+          :toggle-sort="() => onHeaderClicked(header.id)"
+          :set-filter="(value: string) => setFilter(header.id, value)"
         />
         <div
           v-else
@@ -30,20 +33,22 @@
           :class="{ 'creat-datatable-header-clickable': header.sortable }"
         >
           <span>{{ header.label }}</span>
-          <div v-if="header.sortable ?? false" class="sorting-icons">
-            <SortingIcon
-              v-show="sortId === header.id && sortDirection"
-              :direction="sortDirection"
-            />
+          <div v-if="header.sortable" class="sorting-icons">
+            <slot name="sorting-icon" :direction="sortDirection" :header-id="header.id">
+              <SortingIcon
+                v-show="sortId === header.id && sortDirection"
+                :direction="sortDirection"
+              />
+            </slot>
           </div>
         </div>
         <input
           v-if="header.filtering ?? false"
-          v-model="filtersModel[header.id]"
           type="search"
           class="creat-datatable-header-input"
           :class="props.filtersClass"
-          @input="onInput"
+          :value="filtersModel[header.id] ?? ''"
+          @input="onFilterInput(header.id, $event)"
         >
       </th>
     </tr>
@@ -65,7 +70,7 @@ const props = defineProps<{
   sort?: [string, SortDirection];
   filters: { [key: string]: string };
   checkbox: T[];
-  checkboxConfig?: CheckboxConfig;
+  checkboxConfig?: CheckboxConfig<T>;
   filtersClass?: string;
   tableData: T[];
 }>();
@@ -73,6 +78,12 @@ const props = defineProps<{
 const slots = useSlots();
 
 const emit = defineEmits(["update:sort", "update:filters", "update:checkbox"]);
+
+const headerCheckboxChecked = computed(
+  () =>
+    props.tableData.length >= 1 &&
+    checkboxModel.value.length >= props.tableData.length
+);
 
 // Sorting
 const sortModel = computed({
@@ -86,12 +97,12 @@ const sortDirection = computed(() =>
 );
 
 function onHeaderClicked(headerId: string) {
-  const header = props.headers.find((header) => header.id === headerId);
-  if (!header || !header.sortable) {
+  const header = props.headers.find((h) => h.id === headerId);
+  if (!header?.sortable) {
     return;
   }
 
-  if (sortModel.value && sortModel.value[0] === headerId) {
+  if (sortModel.value?.[0] === headerId) {
     sortModel.value = [headerId, sortModel.value[1] === "asc" ? "desc" : "asc"];
   } else {
     sortModel.value = [headerId, "asc"];
@@ -104,10 +115,29 @@ const filtersModel = computed({
   set: (value) => emit("update:filters", value),
 });
 
+function setFilter(headerId: string, value: string) {
+  const trimmedValue = value.trim();
+  const nextFilters = { ...filtersModel.value };
+
+  if (trimmedValue === "") {
+    delete nextFilters[headerId];
+  } else {
+    nextFilters[headerId] = value;
+  }
+
+  filtersModel.value = nextFilters;
+}
+
 function onInput() {
   if (props.checkboxConfig?.overFilterMode === "delete") {
     checkboxModel.value = [];
   }
+}
+
+function onFilterInput(headerId: string, event: Event) {
+  const target = event.target as HTMLInputElement | null;
+  setFilter(headerId, target?.value ?? "");
+  onInput();
 }
 
 // Checkbox
@@ -144,6 +174,6 @@ table thead tr th .sorting-icons {
   height: 16px;
   margin-top: auto;
   margin-bottom: auto;
-  margin-left: 3px;
+  margin-left: 4px;
 }
 </style>

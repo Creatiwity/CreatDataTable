@@ -24,6 +24,9 @@ dist
 .env
 .netlify
 
+# Github
+.github/copilot-*
+
 # Env
 .env
 
