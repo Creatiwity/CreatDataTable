@@ -1,6 +1,6 @@
 <template>
   <div>
-    <CreatDatable
+    <CreatDataTable
       id="creat-datatable"
       v-model:sort="sorting"
       :infos="dataTableInfos"
@@ -16,7 +16,7 @@
       <template #firstname="category">
         <strong>{{ category.data.firstname }}</strong>
       </template>
-    </CreatDatable>
+    </CreatDataTable>
   </div>
 </template>
 

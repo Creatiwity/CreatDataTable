@@ -19,7 +19,7 @@ export default defineNuxtModule<ModuleOptions>({
     const resolver = createResolver(import.meta.url);
 
     addComponent({
-      name: "CreatDatable", // name of the component to be used in vue templates
+      name: "CreatDataTable", // name of the component to be used in vue templates
       filePath: resolver.resolve("runtime/components/DataTable.vue"),
     });
 

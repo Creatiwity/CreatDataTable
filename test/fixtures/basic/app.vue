@@ -1,10 +1,10 @@
 <template>
   <div>
-    <CreatDatable id="datatable" :infos="dataTableInfos">
+    <CreatDataTable id="datatable" :infos="dataTableInfos">
       <template #header-firstname>
         <span>CUSTOM_FIRSTNAME</span>
       </template>
-    </CreatDatable>
+    </CreatDataTable>
   </div>
 </template>
 
