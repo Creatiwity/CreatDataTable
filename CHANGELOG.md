@@ -1,5 +1,34 @@
 # Changelog
 
+## v1.1.0
+
+[compare changes](https://github.com/Creatiwity/CreatDataTable/compare/v1.0.20...v1.1.0)
+
+### 🚀 Enhancements
+
+- **datatable): add customizable slots for sorting, checkboxes, and pagination chore(datatable): implement useTableState and useTableFiltering composables fix(datatable:** Enhance checkbox handling and pagination logic docs: update README with new slot usage examples style: improve code formatting and comments test: update basic tests to reflect new features ([1114896](https://github.com/Creatiwity/CreatDataTable/commit/1114896))
+- **datatable:** Add customizable slots for sorting, checkboxes, and pagination ([4420c6a](https://github.com/Creatiwity/CreatDataTable/commit/4420c6a))
+
+### 🩹 Fixes
+
+- **pagination:** Handle when no config provided ([6de7e1e](https://github.com/Creatiwity/CreatDataTable/commit/6de7e1e))
+- **filter:** Improves normalize function to filter ([ea742c3](https://github.com/Creatiwity/CreatDataTable/commit/ea742c3))
+
+### 🏡 Chore
+
+- **release:** V1.0.21 ([3914da3](https://github.com/Creatiwity/CreatDataTable/commit/3914da3))
+- **release:** V1.0.22 ([6050aac](https://github.com/Creatiwity/CreatDataTable/commit/6050aac))
+- **release:** V1.0.23 ([e2a06fd](https://github.com/Creatiwity/CreatDataTable/commit/e2a06fd))
+- **release:** V1.0.24 ([1fd89ee](https://github.com/Creatiwity/CreatDataTable/commit/1fd89ee))
+- **release:** V1.0.25 ([8900095](https://github.com/Creatiwity/CreatDataTable/commit/8900095))
+- **release:** V1.0.26 ([9f5d218](https://github.com/Creatiwity/CreatDataTable/commit/9f5d218))
+
+### ❤️ Contributors
+
+- Johan Dufau ([@JohanDufau](http://github.com/JohanDufau))
+- Nathan LIBOUTET <nathan.lib19@gmail.com>
+- Fledarath <frederic.ledarath@epitech.eu>
+
 ## v1.0.26
 
 [compare changes](https://github.com/Creatiwity/CreatDataTable/compare/v1.0.20...v1.0.26)
