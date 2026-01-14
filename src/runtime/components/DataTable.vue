@@ -31,7 +31,7 @@
           :key="`${id}-tr-${index}`"
           class="creat-datatable-row"
         >
-          <td v-if="checkboxConfig">
+          <td v-if="checkboxConfig" :id="`${id}-td-checkbox-${index}`">
             <slot name="checkbox-cell" :row="data" :checked="checkboxValue.includes(data)" :toggle-checkbox="() => toggleCheckbox(data)">
               <input
                 type="checkbox"
@@ -43,6 +43,7 @@
           </td>
           <td
             v-for="header in headers"
+            :id="`${header.id}`"
             :key="`${id}-td-${header.id}`"
             :class="contentClassMap.get(header.id)"
           >
