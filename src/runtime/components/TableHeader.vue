@@ -13,6 +13,7 @@
       </th>
       <th
         v-for="header in props.headers"
+        :id="`${header.id}`"
         :key="`${props.id}-DT-header-${header.id}`"
         scope="col"
         :class="header.thClass"
