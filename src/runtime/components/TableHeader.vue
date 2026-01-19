@@ -17,7 +17,11 @@
         :key="`${props.id}-DT-header-${header.id}`"
         scope="col"
         :class="header.thClass"
+        :tabindex="header.sortable || header.filtering ? 0 : undefined"
+        :aria-sort="header.sortable ? getAriaSort(header.id) : undefined"
         @click="onHeaderClicked(header.id)"
+        @keydown.enter="header.sortable ? onHeaderClicked(header.id) : null"
+        @keydown.space="header.sortable ? onHeaderClicked(header.id) : null"
       >
         <slot
           v-if="slots[`header-${header.id}`]"
@@ -32,6 +36,8 @@
           v-else
           class="creat-datatable-header"
           :class="{ 'creat-datatable-header-clickable': header.sortable }"
+          :role="header.sortable ? 'button' : undefined"
+          :aria-label="header.sortable ? `${header.label}, click to sort` : undefined"
         >
           <span>{{ header.label }}</span>
           <div v-if="header.sortable" class="sorting-icons">
@@ -49,6 +55,8 @@
           class="creat-datatable-header-input"
           :class="props.filtersClass"
           :value="filtersModel[header.id] ?? ''"
+          :aria-label="`Filter ${header.label}`"
+          :placeholder="`Filter ${header.label}`"
           @input="onFilterInput(header.id, $event)"
         >
       </th>
@@ -96,6 +104,13 @@ const sortId = computed(() => (sortModel.value ? sortModel.value[0] : null));
 const sortDirection = computed(() =>
   sortModel.value ? sortModel.value[1] : null
 );
+
+function getAriaSort(headerId: string): "ascending" | "descending" | undefined {
+  if (!sortModel.value || sortModel.value[0] !== headerId) {
+    return undefined;
+  }
+  return sortModel.value[1] === "asc" ? "ascending" : "descending";
+}
 
 function onHeaderClicked(headerId: string) {
   const header = props.headers.find((h) => h.id === headerId);
