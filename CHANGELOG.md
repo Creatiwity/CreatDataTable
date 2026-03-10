@@ -1,5 +1,18 @@
 # Changelog
 
+## v2.1.0
+
+[compare changes](https://github.com/Creatiwity/CreatDataTable/compare/v2.0.1...v2.1.0)
+
+### 🚀 Enhancements
+
+- **datatable:** Add dynamic IDs to td and header cells for improved accessibility ([#12](https://github.com/Creatiwity/CreatDataTable/pull/12))
+- **datatable:** Enhance header accessibility with ARIA attributes and keyboard navigation ([0e44511](https://github.com/Creatiwity/CreatDataTable/commit/0e44511))
+
+### ❤️ Contributors
+
+- Nathan LIBOUTET ([@NathanLib](http://github.com/NathanLib))
+
 ## v1.1.0
 
 [compare changes](https://github.com/Creatiwity/CreatDataTable/compare/v1.0.20...v1.1.0)
